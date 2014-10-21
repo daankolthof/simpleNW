@@ -26,3 +26,17 @@
 *.exe
 *.out
 *.app
+
+# Microsoft builds, logs and objects
+/Debug/*
+
+# Microsoft Visual Studio files
+*.sdf
+*.sln
+*.suo
+*.vcxproj
+*.filters
+
+# StarUML design
+*.~ml
+*.uml
