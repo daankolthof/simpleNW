@@ -32,6 +32,7 @@
 
 # Microsoft Visual Studio files
 *.sdf
+*.opensdf
 *.sln
 *.suo
 *.vcxproj
