@@ -3,6 +3,7 @@
 #define _TCPCONNECTION_H
 
 #include "Connection.hpp"
+#include "NetworkService.hpp"
 #include "Server.hpp"
 
 #include <tuple>
