@@ -1,6 +1,14 @@
 
 #include "NetworkService.hpp"
 
+//#include "Server.hpp"
+#include "ServiceOptions.hpp"
+#include "TransportProtocol.hpp"
+//#include "Handler.hpp"
+
+#include "TCPServer.hpp"
+#include "UDPServer.hpp"
+
 NetworkService::NetworkService(ServiceOptions options) {
 
 	switch (options.transport_protocol_.protocol_) {
@@ -77,10 +85,10 @@ void NetworkService::OnConnectionClose(Connection* connection) {
 
 }
 
-void NetworkService::OnReceive(Connection* connection, char data[], size_t bytes_received) {
+void NetworkService::OnReceive(Connection* connection, const char data[], size_t bytes_received) {
 
 }
 
-void NetworkService::OnSend(Connection* connectoin, char data[], size_t bytes_sent) {
+void NetworkService::OnSend(Connection* connectoin, const char data[], size_t bytes_sent) {
 
 }

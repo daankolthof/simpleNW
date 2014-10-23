@@ -3,7 +3,9 @@
 #define _UDPSERVER_H
 
 #include "Server.hpp"
-#include "NetworkService.hpp"
+
+class NetworkService;
+class TransportProtocol;
 
 class UDPServer : public Server {
 

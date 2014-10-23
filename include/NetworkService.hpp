@@ -2,22 +2,17 @@
 #if !defined(_NETWORKSERVICE_H)
 #define _NETWORKSERVICE_H
 
-#include "Server.hpp"
-#include "ServiceOptions.hpp"
-#include "TransportProtocol.hpp"
-#include "Handler.hpp"
-
-#include "TCPServer.hpp"
-#include "UDPServer.hpp"
-
 #include <mutex>
 #include <vector>
 
+class Handler;
+class Connection;
+class ServiceOptions;
+class Server;
 
 class NetworkService {
 
 	friend class Connection;
-	friend class TCPConnection;
 
 public:
 
@@ -41,8 +36,8 @@ protected:
 
 	void OnConnectionOpen(Connection* connection);
 	void OnConnectionClose(Connection* connection);
-	void OnReceive(Connection* connection, char data[], size_t bytes_received);
-	void OnSend(Connection* connection, char data[], size_t bytes_sent);
+	void OnReceive(Connection* connection, const char data[], size_t bytes_received);
+	void OnSend(Connection* connection, const char data[], size_t bytes_sent);
 
 private:
 

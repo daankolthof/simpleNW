@@ -2,12 +2,7 @@
 #if !defined(_TCPSERVER_H)
 #define _TCPSERVER_H
 
-#include "Connection.hpp"
-#include "TCPConnection.hpp"
-#include "Handler.hpp"
 #include "Server.hpp"
-#include "TransportProtocol.hpp"
-#include "NetworkService.hpp"
 
 #include <boost/asio.hpp>
 
@@ -17,6 +12,8 @@
 #include <stdexcept>
 #include <tuple>
 
+class NetworkService;
+class TransportProtocol;
 class TCPConnection;
 
 class TCPServer : public Server {
