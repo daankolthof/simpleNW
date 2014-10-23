@@ -41,3 +41,6 @@
 # StarUML design
 *.~ml
 *.uml
+
+# Cppcheck project files
+*.cppcheck
