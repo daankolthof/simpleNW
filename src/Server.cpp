@@ -25,6 +25,9 @@ Server::~Server() {
 }
 
 int Server::run() {
+
+	std::cout << "Server.run called" << std::endl;
+
 	if (!this->is_initialized_) {
 		return -1;
 	}
@@ -43,7 +46,7 @@ void Server::stop() {
 }
 
 void Server::OnStart() {
-
+	std::cout << "Server started" << std::endl;
 }
 
 void onThreadRun(boost::asio::io_service* boost_io_service, NetworkService* callback_service, Server* server) {

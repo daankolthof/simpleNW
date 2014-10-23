@@ -9,6 +9,8 @@
 #include "TCPServer.hpp"
 #include "UDPServer.hpp"
 
+#include <array>
+
 NetworkService::NetworkService(ServiceOptions options) {
 
 	switch (options.transport_protocol_.protocol_) {
@@ -67,6 +69,8 @@ std::vector<Handler*>& NetworkService::getHandlers() {
 
 void NetworkService::start() {
 
+	std::cout << "NetworkService.start called" << std::endl;
+
 	this->underlying_server_->run();
 	this->started_server_ = true;
 }
@@ -78,17 +82,24 @@ void NetworkService::stop() {
 }
 
 void NetworkService::OnConnectionOpen(Connection* connection) {
-
+	std::cout << "Connection opened" << std::endl;
 }
 
 void NetworkService::OnConnectionClose(Connection* connection) {
-
+	std::cout << "Connection closed" << std::endl;
 }
 
 void NetworkService::OnReceive(Connection* connection, const char data[], size_t bytes_received) {
+	std::cout << "Reveived: " << std::endl;
+	
+	for (size_t i1 = 0; i1 < bytes_received; i1++) {
+		std::cout << data[i1];
+	}
+
+	std::cout << std::endl;
 
 }
 
-void NetworkService::OnSend(Connection* connectoin, const char data[], size_t bytes_sent) {
+void NetworkService::OnSend(Connection* connectionn, const char data[], size_t bytes_sent) {
 
 }

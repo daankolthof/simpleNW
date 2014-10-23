@@ -17,7 +17,9 @@ class NetworkService {
 public:
 
 	NetworkService(ServiceOptions options);
+	NetworkService(NetworkService& other) = delete;
 	virtual ~NetworkService();
+
 
     int addHandler(Handler* handler);
 	std::vector<Handler*>& getHandlers();

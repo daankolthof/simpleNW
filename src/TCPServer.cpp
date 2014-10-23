@@ -6,8 +6,8 @@
 
 
 TCPServer::TCPServer(int threads, uint16_t server_port, NetworkService* callback_service, TransportProtocol tp)
+: Server(threads, server_port, callback_service, tp)
 {
-	Server(threads, server_port, callback_service, tp);
 
 	boost::asio::ip::tcp tcp = boost::asio::ip::tcp::v4();
 
@@ -67,9 +67,11 @@ void TCPServer::handle_accept(TCPConnection* connection, const boost::system::er
 }
 
 void TCPServer::OnStart() {
+	std::cout << "TCPServer started" << std::endl;
 	this->start_accept();
 }
 
 void TCPServer::register_new_connection(TCPConnection* connection) {
-	throw new std::exception("TCPServer::register_new_connection is not implemented.");
+	//throw new std::exception("TCPServer::register_new_connection is not implemented.");
+	connections.push_back(connection);
 }

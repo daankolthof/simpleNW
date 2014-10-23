@@ -26,6 +26,8 @@ public:
 	boost::asio::ip::tcp::acceptor tcp_acceptor_ =
 		boost::asio::ip::tcp::acceptor(this->boost_io_service_, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 0));
 
+	std::vector<TCPConnection*> connections;
+
 	
 
 protected:
