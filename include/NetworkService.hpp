@@ -2,6 +2,7 @@
 #if !defined(_NETWORKSERVICE_H)
 #define _NETWORKSERVICE_H
 
+#include <memory>
 #include <mutex>
 #include <vector>
 
@@ -36,10 +37,10 @@ protected:
 
 	bool started_server_ = false;
 
-	void OnConnectionOpen(Connection* connection);
-	void OnConnectionClose(Connection* connection);
-	void OnReceive(Connection* connection, const char data[], size_t bytes_received);
-	void OnSend(Connection* connection, const char data[], size_t bytes_sent);
+	void OnConnectionOpen(std::shared_ptr<Connection> connection);
+	void OnConnectionClose(std::shared_ptr<Connection> connection);
+	void OnReceive(std::shared_ptr<Connection> connection, const char data[], size_t bytes_received);
+	void OnSend(std::shared_ptr<Connection> connection, const char data[], size_t bytes_sent);
 
 private:
 

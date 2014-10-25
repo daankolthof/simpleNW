@@ -42,10 +42,9 @@ TCPServer::~TCPServer()
 
 void TCPServer::start_accept() {
 
-	TCPConnection* connection = new TCPConnection(this->boost_io_service_, this);
+	std::shared_ptr<TCPConnection> connection(new TCPConnection(this->boost_io_service_, this));
 
 	// Async call to accept new connection.
-	
 	this->tcp_acceptor_.async_accept(connection->socket_,
 		std::bind(&TCPServer::handle_accept, this, connection,
 		std::placeholders::_1)
@@ -53,15 +52,16 @@ void TCPServer::start_accept() {
 	
 }
 
-void TCPServer::handle_accept(TCPConnection* connection, const boost::system::error_code& error) {
-	if (!error) {
-		this->register_new_connection(connection);
-		connection->OnConnectionOpen();
-		connection->start_read();
+void TCPServer::handle_accept(std::shared_ptr<TCPConnection> connection, const boost::system::error_code& error) {
+	
+	if (error) {
+		connection->close(connection);
+		return;
 	}
-	else {
-		delete connection;
-	}
+	
+	this->register_new_connection(connection);
+	connection->OnConnectionOpen(connection);
+	connection->start_read(connection);
 
 	this->start_accept();
 }
@@ -71,7 +71,7 @@ void TCPServer::OnStart() {
 	this->start_accept();
 }
 
-void TCPServer::register_new_connection(TCPConnection* connection) {
+void TCPServer::register_new_connection(std::shared_ptr<TCPConnection> connection) {
 	//throw new std::exception("TCPServer::register_new_connection is not implemented.");
 	connections.push_back(connection);
 }

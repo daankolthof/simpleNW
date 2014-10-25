@@ -11,6 +11,7 @@
 #include <exception>
 #include <stdexcept>
 #include <tuple>
+#include <memory>
 
 class NetworkService;
 class TransportProtocol;
@@ -26,18 +27,18 @@ public:
 	boost::asio::ip::tcp::acceptor tcp_acceptor_ =
 		boost::asio::ip::tcp::acceptor(this->boost_io_service_, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 0));
 
-	std::vector<TCPConnection*> connections;
+	std::vector<std::shared_ptr<TCPConnection>> connections;
 
 	
 
 protected:
 
 	void start_accept();
-	void handle_accept(TCPConnection* connection, const boost::system::error_code& error);
+	void handle_accept(std::shared_ptr<TCPConnection> connection, const boost::system::error_code& error);
 
 	void OnStart();
 
-	void register_new_connection(TCPConnection* connection);
+	void register_new_connection(std::shared_ptr<TCPConnection> connection);
 	
 
 private:

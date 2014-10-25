@@ -4,7 +4,7 @@
 //#include "Server.hpp"
 #include "ServiceOptions.hpp"
 #include "TransportProtocol.hpp"
-//#include "Handler.hpp"
+#include "Handler.hpp"
 
 #include "TCPServer.hpp"
 #include "UDPServer.hpp"
@@ -35,10 +35,6 @@ NetworkService::NetworkService(ServiceOptions options) {
 		throw new std::invalid_argument("Invalid TransportProtocol during construction of NetworkService.");
 		break;
 
-	}
-
-	if (options.starts_immediately_) {
-		this->start();
 	}
 
 }
@@ -81,15 +77,21 @@ void NetworkService::stop() {
 	this->started_server_ = false;
 }
 
-void NetworkService::OnConnectionOpen(Connection* connection) {
+void NetworkService::OnConnectionOpen(std::shared_ptr<Connection> connection) {
 	std::cout << "Connection opened" << std::endl;
+	for (int i1 = 0; i1 < handlers_.size(); i1++) {
+		handlers_[i1]->OnConnectionOpen(connection);
+	}
 }
 
-void NetworkService::OnConnectionClose(Connection* connection) {
+void NetworkService::OnConnectionClose(std::shared_ptr<Connection> connection) {
 	std::cout << "Connection closed" << std::endl;
+	for (int i1 = 0; i1 < handlers_.size(); i1++) {
+		handlers_[i1]->OnConnectionClose(connection);
+	}
 }
 
-void NetworkService::OnReceive(Connection* connection, const char data[], size_t bytes_received) {
+void NetworkService::OnReceive(std::shared_ptr<Connection> connection, const char data[], size_t bytes_received) {
 	std::cout << "Reveived: " << std::endl;
 	
 	for (size_t i1 = 0; i1 < bytes_received; i1++) {
@@ -98,8 +100,14 @@ void NetworkService::OnReceive(Connection* connection, const char data[], size_t
 
 	std::cout << std::endl;
 
+	for (int i1 = 0; i1 < handlers_.size(); i1++) {
+		handlers_[i1]->OnReceive(connection, data, bytes_received);
+	}
+
 }
 
-void NetworkService::OnSend(Connection* connectionn, const char data[], size_t bytes_sent) {
-
+void NetworkService::OnSend(std::shared_ptr<Connection> connection, const char data[], size_t bytes_sent) {
+	for (int i1 = 0; i1 < handlers_.size(); i1++) {
+		handlers_[i1]->OnSend(connection, data, bytes_sent);
+	}
 }

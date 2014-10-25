@@ -13,18 +13,18 @@ Connection::~Connection() {
 
 }
 
-void Connection::OnConnectionOpen() {
-	this->server_ptr_->callback_service_->OnConnectionOpen(this);
+void Connection::OnConnectionOpen(std::shared_ptr<Connection> connection) {
+	this->server_ptr_->callback_service_->OnConnectionOpen(connection);
 }
 
-void Connection::OnConnectionClose() {
-	this->server_ptr_->callback_service_->OnConnectionClose(this);
+void Connection::OnConnectionClose(std::shared_ptr<Connection> connection) {
+	this->server_ptr_->callback_service_->OnConnectionClose(connection);
 }
 
-void Connection::OnReceive(size_t bytes_received) {
-	this->server_ptr_->callback_service_->OnReceive(this, this->data_, bytes_received);
+void Connection::OnReceive(std::shared_ptr<Connection> connection, size_t bytes_received) {
+	this->server_ptr_->callback_service_->OnReceive(connection, this->data_, bytes_received);
 }
 
-void Connection::OnSend(char data[], size_t bytes_sent) {
-	this->server_ptr_->callback_service_->OnSend(this, this->data_, bytes_sent);
+void Connection::OnSend(std::shared_ptr<Connection> connection, char data[], size_t bytes_sent) {
+	this->server_ptr_->callback_service_->OnSend(connection, this->data_, bytes_sent);
 }

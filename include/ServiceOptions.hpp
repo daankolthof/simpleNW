@@ -13,7 +13,6 @@ public:
     int threads_ = 1;
     int32_t server_port_ = -1;
 	TransportProtocol transport_protocol_ = TransportProtocol::default;
-    bool starts_immediately_ = true;
 };
 
 #endif  //_SERVICEOPTIONS_H
