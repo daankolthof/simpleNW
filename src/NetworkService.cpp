@@ -13,6 +13,13 @@
 
 NetworkService::NetworkService(ServiceOptions options) {
 
+	/* If port specified in options is not within minimal and maximal port range, throw exception.
+	*/
+	if (!(ServiceOptions::PORT_MIN <= options.server_port_ && options.server_port_ <= ServiceOptions::PORT_MAX))
+		throw new std::invalid_argument("Invalid port number in ServiceOptions during construction of NetworkService.");
+
+	uint16_t server_port = (uint16_t)options.server_port_;
+
 	switch (options.transport_protocol_.protocol_) {
 
 	case TransportProtocol::default:
@@ -25,7 +32,7 @@ NetworkService::NetworkService(ServiceOptions options) {
 
 	case TransportProtocol::ipv6_tcp:
 		{
-			std::shared_ptr<TCPServer> new_server(new TCPServer(options.threads_, options.server_port_, this, options.transport_protocol_));
+			std::shared_ptr<TCPServer> new_server(new TCPServer(options.threads_, server_port, this, options.transport_protocol_));
 			new_server->this_shared_ptr_ = new_server;
 			this->underlying_server_ = new_server;
 		}
@@ -35,7 +42,7 @@ NetworkService::NetworkService(ServiceOptions options) {
 
 	case TransportProtocol::ipv6_udp:
 		{
-			std::shared_ptr<UDPServer> new_server(new UDPServer(options.threads_, options.server_port_, this, options.transport_protocol_));
+			std::shared_ptr<UDPServer> new_server(new UDPServer(options.threads_, server_port, this, options.transport_protocol_));
 			new_server->this_shared_ptr_ = new_server;
 			this->underlying_server_ = new_server;
 		}
@@ -50,7 +57,7 @@ NetworkService::NetworkService(ServiceOptions options) {
 
 NetworkService::~NetworkService() {
 	// Will stop all threads, the IO service and the server.
-	this->underlying_server_->stop();
+	this->stop();
 
 	std::cout << "NetworkService destructor called" << std::endl;
 }
@@ -90,16 +97,20 @@ void NetworkService::stop() {
 
 void NetworkService::OnConnectionOpen(std::shared_ptr<Connection> connection) {
 	std::cout << "Connection opened" << std::endl;
-	for (int i1 = 0; i1 < handlers_.size(); i1++) {
-		handlers_[i1]->OnConnectionOpen(connection);
+
+	for (Handler* h : handlers_) {
+		h->OnConnectionOpen(connection);
 	}
+
 }
 
 void NetworkService::OnConnectionClose(std::shared_ptr<Connection> connection) {
 	std::cout << "Connection closed" << std::endl;
-	for (int i1 = 0; i1 < handlers_.size(); i1++) {
-		handlers_[i1]->OnConnectionClose(connection);
+
+	for (Handler* h : handlers_) {
+		h->OnConnectionClose(connection);
 	}
+
 }
 
 void NetworkService::OnReceive(std::shared_ptr<Connection> connection, const char data[], size_t bytes_received) {
@@ -111,14 +122,16 @@ void NetworkService::OnReceive(std::shared_ptr<Connection> connection, const cha
 
 	std::cout << std::endl;
 
-	for (int i1 = 0; i1 < handlers_.size(); i1++) {
-		handlers_[i1]->OnReceive(connection, data, bytes_received);
+	for (Handler* h : handlers_) {
+		h->OnReceive(connection, data, bytes_received);
 	}
 
 }
 
 void NetworkService::OnSend(std::shared_ptr<Connection> connection, const char data[], size_t bytes_sent) {
-	for (int i1 = 0; i1 < handlers_.size(); i1++) {
-		handlers_[i1]->OnSend(connection, data, bytes_sent);
+
+	for (Handler* h : handlers_) {
+		h->OnSend(connection, data, bytes_sent);
 	}
+
 }
