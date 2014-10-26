@@ -23,6 +23,10 @@ public:
 
 	std::mutex connection_mtx_;
 
+	/* To keep the object alive, passed to the async functions.
+	Delete this to kill object. */
+	std::shared_ptr<Connection> this_shared_ptr_;
+
 	const static int max_buf_length = 1024;
 
 	std::vector<std::pair<char*, size_t>> sendbuffers_vec_;
@@ -32,18 +36,18 @@ public:
 
 	virtual bool is_open() = 0;
 
-	virtual void send_nonblocking(std::shared_ptr<Connection> connection, char data[], size_t bytes_to_send) = 0;
+	virtual void send_nonblocking(char data[], size_t bytes_to_send) = 0;
 
-	virtual void start_read(std::shared_ptr<Connection> connection) = 0;
+	virtual void start_read() = 0;
 	virtual void handle_read(std::shared_ptr<Connection> connection, const boost::system::error_code& error, size_t bytes_transferred) = 0;
 
-	virtual void start_write(std::shared_ptr<Connection> connection) = 0;
+	virtual void start_write() = 0;
 	virtual void handle_write(std::shared_ptr<Connection> connection, size_t buffervec_index, const boost::system::error_code& error, size_t bytes_transferred) = 0;
 
-	void OnConnectionOpen(std::shared_ptr<Connection> connection);
-	void OnConnectionClose(std::shared_ptr<Connection> connection);
-	void OnReceive(std::shared_ptr<Connection> connection, size_t bytes_received);
-	void OnSend(std::shared_ptr<Connection> connection, char data[], size_t bytes_sent);
+	void OnConnectionOpen();
+	void OnConnectionClose();
+	void OnReceive(size_t bytes_received);
+	void OnSend(char data[], size_t bytes_sent);
 
 protected:
 

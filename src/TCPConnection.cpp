@@ -5,6 +5,7 @@
 TCPConnection::TCPConnection(boost::asio::io_service& io_service, Server* server_ptr)
 : Connection(server_ptr), socket_(io_service)
 {
+	//this->this_shared_ptr_ = std::move(std::make_shared<TCPConnection>(this));
 }
 
 TCPConnection::~TCPConnection() {
@@ -32,7 +33,7 @@ bool TCPConnection::is_open() {
 	return this->socket_.is_open();
 }
 
-void TCPConnection::send_nonblocking(std::shared_ptr<Connection> connection, char data[], size_t bytes_to_send) {
+void TCPConnection::send_nonblocking(char data[], size_t bytes_to_send) {
 
 	{
 		std::unique_lock<std::mutex> lock(this->connection_mtx_);
@@ -52,22 +53,29 @@ void TCPConnection::send_nonblocking(std::shared_ptr<Connection> connection, cha
 		size_t tuple_index = this->sendbuffers_vec_.size() - 1;
 
 
-		this->socket_.async_write_some(boost::asio::buffer(bufcopy, bytes_to_send), std::bind(&TCPConnection::handle_write, this, connection, tuple_index, std::placeholders::_1, std::placeholders::_2));
+		this->socket_.async_write_some(boost::asio::buffer(bufcopy, bytes_to_send), std::bind(&TCPConnection::handle_write, this, this->this_shared_ptr_, tuple_index, std::placeholders::_1, std::placeholders::_2));
 
 	}
 }
 
-void TCPConnection::close(std::shared_ptr<Connection> connection) {
+void TCPConnection::close() {
 
 	{
 		std::unique_lock<std::mutex> lock(this->connection_mtx_);
 
-		this->close_when_owning_mutex(connection);
+		this->close_socket();
 	}
 
 }
 
-void TCPConnection::close_when_owning_mutex(std::shared_ptr<Connection> connection) {
+void TCPConnection::close_socket() {
+	this->OnConnectionClose();
+	this->this_shared_ptr_.reset();
+}
+
+void TCPConnection::close_when_owning_mutex() {
+
+	/*
 
 	{
 		std::unique_lock<std::mutex> lock(this->connection_mtx_, std::adopt_lock);
@@ -78,11 +86,13 @@ void TCPConnection::close_when_owning_mutex(std::shared_ptr<Connection> connecti
 		// This will go wrong, mutex will unlock and will unlock again in the function calling this function.
 	}
 
+	*/
+
 }
 
-void TCPConnection::start_read(std::shared_ptr<Connection> connection) {
+void TCPConnection::start_read() {
 
-	this->socket_.async_read_some(boost::asio::buffer(this->data_, this->max_buf_length), std::bind(&TCPConnection::handle_read, this, connection, std::placeholders::_1, std::placeholders::_2));
+	this->socket_.async_read_some(boost::asio::buffer(this->data_, this->max_buf_length), std::bind(&TCPConnection::handle_read, this, this->this_shared_ptr_, std::placeholders::_1, std::placeholders::_2));
 
 }
 
@@ -96,20 +106,20 @@ void TCPConnection::handle_read(std::shared_ptr<Connection> connection, const bo
 		}
 
 		if (error != boost::system::errc::success) {
-			this->close_when_owning_mutex(connection);
+			this->close_socket();
 			return;
 		}
 
 		// Call all handers before reading more data.
-		this->OnReceive(connection, bytes_transferred);
+		this->OnReceive(bytes_transferred);
 
-		this->start_read(connection);
+		this->start_read();
 
 	}
 
 }
 
-void TCPConnection::start_write(std::shared_ptr<Connection> connection) {
+void TCPConnection::start_write() {
 
 }
 
@@ -125,7 +135,7 @@ void TCPConnection::handle_write(std::shared_ptr<Connection> connection, size_t 
 		if (error == boost::system::errc::success) {
 			/* If sending went without any errors, it means message has actually been sent.
 			Call any handlers */
-			this->OnSend(connection, sendbuf_loc, bytes_transferred);
+			this->OnSend(sendbuf_loc, bytes_transferred);
 		}
 
 		// Delete the data afer all handlers are called and data is no longer needed.

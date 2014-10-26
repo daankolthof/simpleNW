@@ -43,6 +43,7 @@ TCPServer::~TCPServer()
 void TCPServer::start_accept() {
 
 	std::shared_ptr<TCPConnection> connection(new TCPConnection(this->boost_io_service_, this));
+	connection->this_shared_ptr_ = connection;
 
 	// Async call to accept new connection.
 	this->tcp_acceptor_.async_accept(connection->socket_,
@@ -55,13 +56,13 @@ void TCPServer::start_accept() {
 void TCPServer::handle_accept(std::shared_ptr<TCPConnection> connection, const boost::system::error_code& error) {
 	
 	if (error) {
-		connection->close(connection);
+		connection->close();
 		return;
 	}
 	
 	this->register_new_connection(connection);
-	connection->OnConnectionOpen(connection);
-	connection->start_read(connection);
+	connection->OnConnectionOpen();
+	connection->start_read();
 
 	this->start_accept();
 }
