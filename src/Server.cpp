@@ -44,7 +44,7 @@ int Server::run() {
 		this->OnStart();
 
 		for (size_t i1 = 0; i1 < threads_vec_.size(); i1++) {
-			threads_vec_[i1] = std::move(std::thread(&onThreadRun, &this->boost_io_service_, this->callback_service_, this));
+			threads_vec_[i1] = std::move(std::thread(&onThreadRun, &this->boost_io_service_));
 		}
 
 		return threads_vec_.size();
@@ -93,7 +93,7 @@ void Server::join_threads() {
 	}
 }
 
-void onThreadRun(boost::asio::io_service* boost_io_service, NetworkService* callback_service, Server* server) {
+void onThreadRun(boost::asio::io_service* boost_io_service) {
 	boost_io_service->run();
 
 	std::cout << "Thread finished: " << std::this_thread::get_id() << std::endl;

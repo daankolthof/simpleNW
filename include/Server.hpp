@@ -60,6 +60,6 @@ private:
 
 };
 
-void onThreadRun(boost::asio::io_service* boost_io_service, NetworkService* callback_service, Server* server);
+void onThreadRun(boost::asio::io_service* boost_io_service);
 
 #endif  //_SERVER_H
