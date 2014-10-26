@@ -21,17 +21,25 @@ class Echoing_Handler : public Handler {
 
 int main(int argc, char* argv[]) {
 
-	ServiceOptions options;
-	options.server_port_ = 5000;
-	options.threads_ = 8;
-	options.transport_protocol_ = IPV4::TCP();
+	{
+		ServiceOptions options;
+		options.server_port_ = 5000;
+		options.threads_ = 1;
+		options.transport_protocol_ = IPV4::TCP();
 
-	NetworkService ok(options);
+		NetworkService ok(options);
 
-	ok.start();
+		ok.start();
+		
+		while (true) {
 
-	while (true) {
+		}
+
+		std::cin.get();
+
 
 	}
 
+
+	std::cin.get();
 }

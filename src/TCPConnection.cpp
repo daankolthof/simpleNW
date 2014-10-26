@@ -2,31 +2,18 @@
 #include "TCPConnection.hpp"
 
 
-TCPConnection::TCPConnection(boost::asio::io_service& io_service, Server* server_ptr)
+TCPConnection::TCPConnection(boost::asio::io_service& io_service, std::shared_ptr<Server> server_ptr)
 : Connection(server_ptr), socket_(io_service)
 {
 	//this->this_shared_ptr_ = std::move(std::make_shared<TCPConnection>(this));
 }
 
 TCPConnection::~TCPConnection() {
+	/* The destruction will be called when all shared pointers are destroyed.
+	 * Which  means this object will not be used again.
+	 */
 
-
-	/*
-	{
-		std::unique_lock<std::mutex> lock(this->connection_mtx_);
-
-		if (!this->socket_.is_open()) {
-			// Object is already closed, destruct.
-			return;
-		}
-
-		// Close underlying socket.
-		this->close_when_owning_mutex();
-		
-	}
-	*/
-
-	// Let object be destroyed.
+	std::cout << "TCPConnection destructor called." << std::endl;
 }
 
 bool TCPConnection::is_open() {
@@ -71,23 +58,6 @@ void TCPConnection::close() {
 void TCPConnection::close_socket() {
 	this->OnConnectionClose();
 	this->this_shared_ptr_.reset();
-}
-
-void TCPConnection::close_when_owning_mutex() {
-
-	/*
-
-	{
-		std::unique_lock<std::mutex> lock(this->connection_mtx_, std::adopt_lock);
-
-		this->socket_.close();
-		this->OnConnectionClose(connection);
-
-		// This will go wrong, mutex will unlock and will unlock again in the function calling this function.
-	}
-
-	*/
-
 }
 
 void TCPConnection::start_read() {

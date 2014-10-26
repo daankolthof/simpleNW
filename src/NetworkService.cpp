@@ -24,12 +24,21 @@ NetworkService::NetworkService(ServiceOptions options) {
 	case TransportProtocol::ipv6_default:
 
 	case TransportProtocol::ipv6_tcp:
-		this->underlying_server_ = new TCPServer(options.threads_, options.server_port_, this, options.transport_protocol_);
+		{
+			std::shared_ptr<TCPServer> new_server(new TCPServer(options.threads_, options.server_port_, this, options.transport_protocol_));
+			new_server->this_shared_ptr_ = new_server;
+			this->underlying_server_ = new_server;
+		}
+		
 		break;
 	case TransportProtocol::ipv4_udp:
 
 	case TransportProtocol::ipv6_udp:
-		this->underlying_server_ = new UDPServer(options.threads_, options.server_port_, this, options.transport_protocol_);
+		{
+			std::shared_ptr<UDPServer> new_server(new UDPServer(options.threads_, options.server_port_, this, options.transport_protocol_));
+			new_server->this_shared_ptr_ = new_server;
+			this->underlying_server_ = new_server;
+		}
 		break;
 	default:
 		throw new std::invalid_argument("Invalid TransportProtocol during construction of NetworkService.");
@@ -41,7 +50,9 @@ NetworkService::NetworkService(ServiceOptions options) {
 
 NetworkService::~NetworkService() {
 	// Will stop all threads, the IO service and the server.
-	delete this->underlying_server_;
+	this->underlying_server_->stop();
+
+	std::cout << "NetworkService destructor called" << std::endl;
 }
 
 int NetworkService::addHandler(Handler* handler) {

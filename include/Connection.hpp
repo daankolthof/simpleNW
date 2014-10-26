@@ -17,26 +17,29 @@ class Connection {
 
 public:
 
-	Connection();
-	Connection(Server* server_ptr);
 	virtual ~Connection();
+
+	virtual bool is_open() = 0;
+
+	virtual void send_nonblocking(char data[], size_t bytes_to_send) = 0;
+
+protected:
+
+	Connection();
+	Connection(std::shared_ptr<Server> server_ptr);
 
 	std::mutex connection_mtx_;
 
-	/* To keep the object alive, passed to the async functions.
-	Delete this to kill object. */
+	/* Used to keep the object alive, passed to the async functions.
+	Delete this and close underlying connection to kill object. */
 	std::shared_ptr<Connection> this_shared_ptr_;
 
 	const static int max_buf_length = 1024;
 
 	std::vector<std::pair<char*, size_t>> sendbuffers_vec_;
 
-	Server* server_ptr_;
+	std::shared_ptr<Server> server_ptr_;
 	char data_[max_buf_length];
-
-	virtual bool is_open() = 0;
-
-	virtual void send_nonblocking(char data[], size_t bytes_to_send) = 0;
 
 	virtual void start_read() = 0;
 	virtual void handle_read(std::shared_ptr<Connection> connection, const boost::system::error_code& error, size_t bytes_transferred) = 0;
@@ -48,8 +51,6 @@ public:
 	void OnConnectionClose();
 	void OnReceive(size_t bytes_received);
 	void OnSend(char data[], size_t bytes_sent);
-
-protected:
 
 private:
 

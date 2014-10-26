@@ -16,6 +16,9 @@ public:
 
 protected:
 
+	void OnStart();
+	void OnStop();
+
 private:
 
 

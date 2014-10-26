@@ -8,7 +8,7 @@ Connection::Connection() {
 	//this->this_shared_ptr = std::make_shared<Connection>(this);
 }
 
-Connection::Connection(Server* server_ptr)
+Connection::Connection(std::shared_ptr<Server> server_ptr)
 : server_ptr_(server_ptr)
 {
 }

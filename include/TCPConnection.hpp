@@ -9,9 +9,10 @@
 
 class TCPConnection : public Connection {
 
+	friend class TCPServer;
+
 public:
 
-	TCPConnection(boost::asio::io_service& io_service, Server* server_ptr);
 	~TCPConnection();
 
 	boost::asio::ip::tcp::socket socket_;
@@ -31,7 +32,8 @@ public:
 
 protected:
 
-	void close_when_owning_mutex();
+	TCPConnection(boost::asio::io_service& io_service, std::shared_ptr<Server> server_ptr);
+	
 	void close_socket();
 	
 

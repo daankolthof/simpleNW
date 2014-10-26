@@ -11,3 +11,11 @@ UDPServer::UDPServer(int threads, uint16_t server_port, NetworkService* callback
 UDPServer::~UDPServer() {
 
 }
+
+void UDPServer::OnStart() {
+
+}
+
+void UDPServer::OnStop() {
+
+}

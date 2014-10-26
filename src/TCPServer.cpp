@@ -42,7 +42,8 @@ TCPServer::~TCPServer()
 
 void TCPServer::start_accept() {
 
-	std::shared_ptr<TCPConnection> connection(new TCPConnection(this->boost_io_service_, this));
+	// Fill in the connections smart pointer to itself.
+	std::shared_ptr<TCPConnection> connection(new TCPConnection(this->boost_io_service_, this->this_shared_ptr_));
 	connection->this_shared_ptr_ = connection;
 
 	// Async call to accept new connection.
@@ -54,17 +55,31 @@ void TCPServer::start_accept() {
 }
 
 void TCPServer::handle_accept(std::shared_ptr<TCPConnection> connection, const boost::system::error_code& error) {
-	
-	if (error) {
-		connection->close();
-		return;
-	}
-	
-	this->register_new_connection(connection);
-	connection->OnConnectionOpen();
-	connection->start_read();
 
-	this->start_accept();
+	std::cout << "TCPServer::handle_accept called with error: " << error.message() << std::endl;
+	
+	{
+		std::unique_lock<std::mutex> lock(this->server_mtx_);
+
+		std::cout << "got lock" << std::endl;
+
+		if (this->boost_io_service_.stopped()) {
+			this->stop_server();
+		}
+
+		if (error) {
+			connection->close();
+		}
+		else
+		{
+			this->register_new_connection(connection);
+			connection->OnConnectionOpen();
+			connection->start_read();
+		}
+
+		this->start_accept();
+
+	}
 }
 
 void TCPServer::OnStart() {
@@ -72,7 +87,11 @@ void TCPServer::OnStart() {
 	this->start_accept();
 }
 
+void TCPServer::OnStop() {
+	this->tcp_acceptor_.close();
+}
+
 void TCPServer::register_new_connection(std::shared_ptr<TCPConnection> connection) {
 	//throw new std::exception("TCPServer::register_new_connection is not implemented.");
-	connections.push_back(connection);
+	//connections.push_back(connection);
 }

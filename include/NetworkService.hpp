@@ -31,7 +31,7 @@ public:
 protected:
 
 	std::vector<Handler*> handlers_;
-	Server* underlying_server_;
+	std::shared_ptr<Server> underlying_server_;
 
 	std::mutex handler_mtx_;
 
