@@ -1,6 +1,6 @@
 
-#if !defined(SIMPLENW_H)
-#define SIMPLENW_H
+#if !defined(_SIMPLENW_H)
+#define _SIMPLENW_H
 
 
 #include "NetworkService.hpp"
