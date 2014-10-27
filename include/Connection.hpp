@@ -25,7 +25,7 @@ public:
 
 protected:
 
-	Connection();
+	//Connection();
 	Connection(std::shared_ptr<Server> server_ptr);
 
 	std::mutex connection_mtx_;
@@ -38,7 +38,7 @@ protected:
 
 	std::vector<std::pair<char*, size_t>> sendbuffers_vec_;
 
-	std::shared_ptr<Server> server_ptr_;
+	const std::shared_ptr<Server> server_ptr_;
 	char data_[max_buf_length];
 
 	virtual void start_read() = 0;
@@ -50,7 +50,7 @@ protected:
 	void OnConnectionOpen();
 	void OnConnectionClose();
 	void OnReceive(size_t bytes_received);
-	void OnSend(char data[], size_t bytes_sent);
+	void OnSend(char data[], size_t data_size, size_t bytes_sent);
 
 private:
 

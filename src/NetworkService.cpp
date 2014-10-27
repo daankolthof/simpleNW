@@ -95,7 +95,7 @@ void NetworkService::stop() {
 	this->started_server_ = false;
 }
 
-void NetworkService::OnConnectionOpen(std::shared_ptr<Connection> connection) {
+void NetworkService::OnConnectionOpen(std::shared_ptr<Connection> connection) const {
 	std::cout << "Connection opened" << std::endl;
 
 	for (Handler* h : handlers_) {
@@ -104,7 +104,7 @@ void NetworkService::OnConnectionOpen(std::shared_ptr<Connection> connection) {
 
 }
 
-void NetworkService::OnConnectionClose(std::shared_ptr<Connection> connection) {
+void NetworkService::OnConnectionClose(std::shared_ptr<Connection> connection) const {
 	std::cout << "Connection closed" << std::endl;
 
 	for (Handler* h : handlers_) {
@@ -113,7 +113,7 @@ void NetworkService::OnConnectionClose(std::shared_ptr<Connection> connection) {
 
 }
 
-void NetworkService::OnReceive(std::shared_ptr<Connection> connection, const char data[], size_t bytes_received) {
+void NetworkService::OnReceive(std::shared_ptr<Connection> connection, const char data[], size_t bytes_received) const {
 	std::cout << "Reveived: " << std::endl;
 	
 	for (size_t i1 = 0; i1 < bytes_received; i1++) {
@@ -128,10 +128,10 @@ void NetworkService::OnReceive(std::shared_ptr<Connection> connection, const cha
 
 }
 
-void NetworkService::OnSend(std::shared_ptr<Connection> connection, const char data[], size_t bytes_sent) {
+void NetworkService::OnSend(std::shared_ptr<Connection> connection, const char data[], size_t data_size, size_t bytes_sent) const {
 
 	for (Handler* h : handlers_) {
-		h->OnSend(connection, data, bytes_sent);
+		h->OnSend(connection, data, data_size, bytes_sent);
 	}
 
 }

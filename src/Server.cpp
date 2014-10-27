@@ -3,9 +3,16 @@
 
 #include "TransportProtocol.hpp"
 
-Server::Server() { }
+/*
+Server::Server()
+: server_port_(0)
+{ }
+*/
 
-Server::Server(int threads, uint16_t server_port, NetworkService* callback_service, TransportProtocol tp) {
+Server::Server(int threads, uint16_t server_port, NetworkService* callback_service, TransportProtocol tp)
+: server_port_(server_port), callback_service_(callback_service), tp_(tp)
+
+{
 	this->callback_service_ = callback_service;
 	this->threads_vec_.resize(threads);
 

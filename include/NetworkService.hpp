@@ -37,10 +37,10 @@ protected:
 
 	bool started_server_ = false;
 
-	void OnConnectionOpen(std::shared_ptr<Connection> connection);
-	void OnConnectionClose(std::shared_ptr<Connection> connection);
-	void OnReceive(std::shared_ptr<Connection> connection, const char data[], size_t bytes_received);
-	void OnSend(std::shared_ptr<Connection> connection, const char data[], size_t bytes_sent);
+	void OnConnectionOpen(std::shared_ptr<Connection> connection) const;
+	void OnConnectionClose(std::shared_ptr<Connection> connection) const;
+	void OnReceive(std::shared_ptr<Connection> connection, const char data[], size_t bytes_received) const;
+	void OnSend(std::shared_ptr<Connection> connection, const char data[], size_t data_size, size_t bytes_sent) const;
 
 private:
 

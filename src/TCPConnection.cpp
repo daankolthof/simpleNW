@@ -105,7 +105,7 @@ void TCPConnection::handle_write(std::shared_ptr<Connection> connection, size_t 
 		if (error == boost::system::errc::success) {
 			/* If sending went without any errors, it means message has actually been sent.
 			Call any handlers */
-			this->OnSend(sendbuf_loc, bytes_transferred);
+			this->OnSend(sendbuf_loc, sendbuf_size, bytes_transferred);
 		}
 
 		// Delete the data afer all handlers are called and data is no longer needed.

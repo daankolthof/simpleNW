@@ -15,7 +15,7 @@ class Echoing_Handler : public Handler {
 		if (!connection->is_open())
 			return;
 	}
-	void OnSend(std::shared_ptr<Connection> connection, const char data[], size_t bytes_sent) = 0;
+	void OnSend(std::shared_ptr<Connection> connection, const char data[], size_t data_size, size_t bytes_sent) = 0;
 
 };
 

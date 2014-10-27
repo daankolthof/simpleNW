@@ -8,6 +8,8 @@
 #include <thread>
 #include <boost/asio.hpp>
 
+#include "TransportProtocol.hpp"
+
 class NetworkService;
 class TransportProtocol;
 
@@ -25,14 +27,12 @@ public:
 
 protected:
 
-	Server();
+	//Server();
 	Server(int threads, uint16_t server_port, NetworkService* callback_service, TransportProtocol tp);
 	Server(Server& other) = delete;
 
 	boost::asio::io_service boost_io_service_;
 
-	NetworkService* callback_service_;
-	
 	std::mutex server_mtx_;
 
 	/* Used to keep the object alive, passed to the async functions.
@@ -41,6 +41,10 @@ protected:
 
 	bool is_initialized_ = false;
 	bool stopped = false;
+
+	const uint16_t server_port_;
+	const NetworkService* callback_service_;
+	const TransportProtocol tp_;
 
 	std::vector<std::thread> threads_vec_;
 
