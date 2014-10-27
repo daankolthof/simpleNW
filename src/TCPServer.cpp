@@ -55,13 +55,9 @@ void TCPServer::start_accept() {
 }
 
 void TCPServer::handle_accept(std::shared_ptr<TCPConnection> connection, const boost::system::error_code& error) {
-
-	std::cout << "TCPServer::handle_accept called with error: " << error.message() << std::endl;
 	
 	{
 		std::unique_lock<std::mutex> lock(this->server_mtx_);
-
-		std::cout << "got lock" << std::endl;
 
 		if (this->boost_io_service_.stopped()) {
 			this->stop_server();
@@ -83,15 +79,17 @@ void TCPServer::handle_accept(std::shared_ptr<TCPConnection> connection, const b
 }
 
 void TCPServer::OnStart() {
-	std::cout << "TCPServer started" << std::endl;
+
 	this->start_accept();
 }
 
 void TCPServer::OnStop() {
+
 	this->tcp_acceptor_.close();
 }
 
+/* Keeping a list of connections is not needed, connections are kept alive until closed.
+*/
 void TCPServer::register_new_connection(std::shared_ptr<TCPConnection> connection) {
-	//throw new std::exception("TCPServer::register_new_connection is not implemented.");
-	//connections.push_back(connection);
+	
 }

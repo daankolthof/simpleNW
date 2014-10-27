@@ -25,7 +25,6 @@ public:
 
 protected:
 
-	//Connection();
 	Connection(std::shared_ptr<Server> server_ptr);
 
 	std::mutex connection_mtx_;
@@ -56,4 +55,4 @@ private:
 
 };
 
-#endif
+#endif //_CONNECTION_H

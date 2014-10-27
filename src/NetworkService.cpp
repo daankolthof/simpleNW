@@ -1,7 +1,6 @@
 
 #include "NetworkService.hpp"
 
-//#include "Server.hpp"
 #include "ServiceOptions.hpp"
 #include "TransportProtocol.hpp"
 #include "Handler.hpp"
@@ -56,10 +55,10 @@ NetworkService::NetworkService(ServiceOptions options) {
 }
 
 NetworkService::~NetworkService() {
-	// Will stop all threads, the IO service and the server.
+	/* Will stop all threads, the IO service and the server.
+	*/
 	this->stop();
 
-	std::cout << "NetworkService destructor called" << std::endl;
 }
 
 int NetworkService::addHandler(Handler* handler) {
@@ -83,8 +82,6 @@ std::vector<Handler*>& NetworkService::getHandlers() {
 
 void NetworkService::start() {
 
-	std::cout << "NetworkService.start called" << std::endl;
-
 	this->underlying_server_->run();
 	this->started_server_ = true;
 }
@@ -96,7 +93,6 @@ void NetworkService::stop() {
 }
 
 void NetworkService::OnConnectionOpen(std::shared_ptr<Connection> connection) const {
-	std::cout << "Connection opened" << std::endl;
 
 	for (Handler* h : handlers_) {
 		h->OnConnectionOpen(connection);
@@ -105,7 +101,6 @@ void NetworkService::OnConnectionOpen(std::shared_ptr<Connection> connection) co
 }
 
 void NetworkService::OnConnectionClose(std::shared_ptr<Connection> connection) const {
-	std::cout << "Connection closed" << std::endl;
 
 	for (Handler* h : handlers_) {
 		h->OnConnectionClose(connection);
@@ -114,7 +109,6 @@ void NetworkService::OnConnectionClose(std::shared_ptr<Connection> connection) c
 }
 
 void NetworkService::OnReceive(std::shared_ptr<Connection> connection, const char data[], size_t bytes_received) const {
-	std::cout << "Reveived: " << std::endl;
 	
 	for (size_t i1 = 0; i1 < bytes_received; i1++) {
 		std::cout << data[i1];

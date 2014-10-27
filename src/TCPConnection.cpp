@@ -5,15 +5,12 @@
 TCPConnection::TCPConnection(boost::asio::io_service& io_service, std::shared_ptr<Server> server_ptr)
 : Connection(server_ptr), socket_(io_service)
 {
-	//this->this_shared_ptr_ = std::move(std::make_shared<TCPConnection>(this));
 }
 
 TCPConnection::~TCPConnection() {
 	/* The destruction will be called when all shared pointers are destroyed.
 	 * Which  means this object will not be used again.
 	 */
-
-	std::cout << "TCPConnection destructor called." << std::endl;
 }
 
 bool TCPConnection::is_open() {

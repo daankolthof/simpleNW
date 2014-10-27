@@ -20,7 +20,6 @@ public:
 	bool is_open();
 
 	void close();
-	
 
 	void send_nonblocking(char data[], size_t bytes_to_send);
 
@@ -41,4 +40,4 @@ private:
 
 };
 
-#endif
+#endif // _TCPCONNECTION_H
