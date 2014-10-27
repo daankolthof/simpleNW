@@ -17,10 +17,10 @@ bool TCPConnection::is_open() {
 	return this->socket_.is_open();
 }
 
-void TCPConnection::send_nonblocking(char data[], size_t bytes_to_send) {
+void TCPConnection::send_nonblocking(const char data[], size_t bytes_to_send) {
 
 	{
-		std::unique_lock<std::mutex> lock(this->connection_mtx_);
+		std::unique_lock<std::recursive_mutex> lock(this->connection_mtx_);
 
 		if (!this->is_open()) {
 			return;
@@ -45,7 +45,7 @@ void TCPConnection::send_nonblocking(char data[], size_t bytes_to_send) {
 void TCPConnection::close() {
 
 	{
-		std::unique_lock<std::mutex> lock(this->connection_mtx_);
+		std::unique_lock<std::recursive_mutex> lock(this->connection_mtx_);
 
 		this->close_socket();
 	}
@@ -66,7 +66,7 @@ void TCPConnection::start_read() {
 void TCPConnection::handle_read(std::shared_ptr<Connection> connection, const boost::system::error_code& error, size_t bytes_transferred) {
 
 	{
-		std::unique_lock<std::mutex> lock(this->connection_mtx_);
+		std::unique_lock<std::recursive_mutex> lock(this->connection_mtx_);
 
 		if (!this->socket_.is_open()) {
 			return;
@@ -93,7 +93,7 @@ void TCPConnection::start_write() {
 void TCPConnection::handle_write(std::shared_ptr<Connection> connection, size_t buffervec_index, const boost::system::error_code& error, size_t bytes_transferred) {
 
 	{
-		std::unique_lock<std::mutex> lock(this->connection_mtx_);
+		std::unique_lock<std::recursive_mutex> lock(this->connection_mtx_);
 
 		// Get the buffer used to store the data to send.
 		char* sendbuf_loc = std::get<0>(this->sendbuffers_vec_[buffervec_index]);

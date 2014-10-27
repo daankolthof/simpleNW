@@ -21,13 +21,13 @@ public:
 
 	virtual bool is_open() = 0;
 
-	virtual void send_nonblocking(char data[], size_t bytes_to_send) = 0;
+	virtual void send_nonblocking(const char data[], size_t bytes_to_send) = 0;
 
 protected:
 
 	Connection(std::shared_ptr<Server> server_ptr);
 
-	std::mutex connection_mtx_;
+	std::recursive_mutex connection_mtx_;
 
 	/* Used to keep the object alive, passed to the async functions.
 	Delete this and close underlying connection to kill object. */
