@@ -8,7 +8,7 @@
 #include <thread>
 #include <boost/asio.hpp>
 
-#include "TransportProtocol.hpp"
+#include <TransportProtocol.hpp>
 
 class NetworkService;
 class TransportProtocol;

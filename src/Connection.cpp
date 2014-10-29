@@ -1,8 +1,8 @@
 
-#include "Connection.hpp"
+#include <Connection.hpp>
 
-#include "Server.hpp"
-#include "NetworkService.hpp"
+#include <Server.hpp>
+#include <NetworkService.hpp>
 
 
 Connection::Connection(std::shared_ptr<Server> server_ptr)
