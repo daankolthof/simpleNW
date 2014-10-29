@@ -12,7 +12,7 @@ public:
 
     int threads_ = 1;
     int32_t server_port_ = -1;
-	TransportProtocol transport_protocol_ = TransportProtocol::default;
+	TransportProtocol transport_protocol_ = TransportProtocol::ip_default;
 };
 
 #endif  //_SERVICEOPTIONS_H

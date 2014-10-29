@@ -8,7 +8,7 @@ class TransportProtocol {
 public:
 
     enum transpprtcl {
-		default,
+		ip_default,
 		ipv4_default,
 		ipv4_tcp,
 		ipv4_udp,
@@ -17,7 +17,7 @@ public:
 		ipv6_udp,
     };
 
-	transpprtcl protocol_ = default;
+	transpprtcl protocol_ = ip_default;
 
 	TransportProtocol(transpprtcl protocol);	
     

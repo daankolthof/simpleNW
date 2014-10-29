@@ -9,6 +9,7 @@
 #include <UDPServer.hpp>
 
 #include <array>
+#include <iostream>
 
 NetworkService::NetworkService(ServiceOptions options) {
 
@@ -21,7 +22,7 @@ NetworkService::NetworkService(ServiceOptions options) {
 
 	switch (options.transport_protocol_.protocol_) {
 
-	case TransportProtocol::default:
+	case TransportProtocol::ip_default:
 
 	case TransportProtocol::ipv4_default:
 

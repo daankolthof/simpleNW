@@ -13,7 +13,7 @@ TCPServer::TCPServer(int threads, uint16_t server_port, NetworkService* callback
 
 	switch (tp.protocol_) {
 
-	case TransportProtocol::default:
+	case TransportProtocol::ip_default:
 
 	case TransportProtocol::ipv4_default:
 
