@@ -6,6 +6,7 @@ set(PROJECT_VERSION 0.1.0)
 
 # OPTIONS
 option(BUILD_NUMBER "Use a buildnumber" -1)
+option(RELEASE "Build a release version" off)
 
 # compiler flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
