@@ -12,10 +12,6 @@
 class Server;
 class NetworkService;
 
-template <typename T>
-class DynamicArray;
-
-
 class Connection {
 
 public:

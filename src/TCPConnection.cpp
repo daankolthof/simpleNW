@@ -1,9 +1,6 @@
 
 #include <TCPConnection.hpp>
 
-#include <DynamicArray.hpp>
-
-
 TCPConnection::TCPConnection(boost::asio::io_service& io_service, std::shared_ptr<Server> server_ptr)
 : Connection(server_ptr), socket_(io_service)
 {

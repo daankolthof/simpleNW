@@ -7,9 +7,6 @@
 #include <tuple>
 #include <vector>
 
-template <typename T>
-class DynamicArray;
-
 class TCPConnection : public Connection {
 
 	friend class TCPServer;
