@@ -5,6 +5,9 @@
 template <typename T>
 class DynamicArray {
 
+	friend class Connection;
+	friend class TCPConnection;
+
 public:
 
 	DynamicArray::DynamicArray(size_t arraysize) {
@@ -13,10 +16,16 @@ public:
 		this->buffer_size_ = arraysize;
 	}
 
-	/* Copy constructor not possible because class manages memory which can only be deleted once. */
-	DynamicArray(const DynamicArray& other) = delete;
+	/* Class is copyable but object copied from loses ownership of the underlying buffer.
+	The only reason this constructor exists is because std::bind doesn't work that well with moving objects. */
+	DynamicArray(DynamicArray& other) {
 
-	
+		this->buffer_ = other.buffer_;
+		this->buffer_size_ = other.buffer_size_;
+
+		other.has_ownership_ = false;
+	}
+
 	DynamicArray(DynamicArray&& other) {
 		// MSVC with Visual Studio 2013 doesn't support default move constructors!?
 
@@ -30,6 +39,16 @@ public:
 
 	}
 
+	DynamicArray::~DynamicArray() {
+
+		/* Check if we do not have a null pointer.
+		This could happen when object contents were moved to other object.*/
+		if (this->has_ownership_ && this->buffer_) {
+			delete this->buffer_;
+		}
+
+	}
+
 	T* data() {
 		return this->buffer_;
 	}
@@ -38,22 +57,16 @@ public:
 		return this->buffer_size_;
 	}
 
-	DynamicArray::~DynamicArray() {
-
-		/* Check if we do not have a null pointer.
-		This could happen when object contents were moved to other object.*/
-		if (this->buffer_) {
-			delete this->buffer_;
-		}
-
-	}
-
-protected:
 
 private:
 
+	
+
+
 	T* buffer_;
 	size_t buffer_size_;
+
+	bool has_ownership_ = true;
 
 };
 

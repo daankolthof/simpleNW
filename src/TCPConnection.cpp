@@ -28,15 +28,14 @@ void TCPConnection::send_nonblocking(const char data[], size_t bytes_to_send) {
 			return;
 		}
 
-		std::shared_ptr<DynamicArray<char>> arr(new DynamicArray<char>(bytes_to_send));
+		char* buf = new char[bytes_to_send];
+		memcpy(buf, data, bytes_to_send);
 
-		std::cout << "Allocated DynamicArray: " << arr.get() << std::endl;
+		std::tuple<char*, size_t> tup;
+		std::get<0>(tup) = buf;
+		std::get<1>(tup) = bytes_to_send;
 
-		memcpy(arr->data(), data, bytes_to_send);
-
-		
 		/*
-
 		char* bufcopy = new char[bytes_to_send];
 		memcpy(bufcopy, data, bytes_to_send);
 
@@ -49,10 +48,8 @@ void TCPConnection::send_nonblocking(const char data[], size_t bytes_to_send) {
 
 		*/
 
-		std::cout << "Preparing to send." << std::endl;
+		this->socket_.async_write_some(boost::asio::buffer(buf, bytes_to_send), std::bind(&TCPConnection::handle_write, this, this->this_shared_ptr_, tup, std::placeholders::_1, std::placeholders::_2));
 
-		//this->socket_.async_write_some(boost::asio::buffer(bufcopy, bytes_to_send), std::bind(&TCPConnection::handle_write, this, this->this_shared_ptr_, tuple_index, std::placeholders::_1, std::placeholders::_2));
-		this->socket_.async_write_some(boost::asio::buffer(arr->data(), arr->size()), std::bind(&TCPConnection::handle_write, this, this->this_shared_ptr_, arr, std::placeholders::_1, std::placeholders::_2));
 	}
 }
 
@@ -131,30 +128,21 @@ void TCPConnection::handle_write(std::shared_ptr<Connection> connection, size_t 
 }
 */
 
-void TCPConnection::handle_write(std::shared_ptr<Connection> connection, std::shared_ptr<DynamicArray<char>> arr, const boost::system::error_code& error, size_t bytes_transferred) {
+void TCPConnection::handle_write(std::shared_ptr<Connection> connection, std::tuple<char*, size_t> buf, const boost::system::error_code& error, size_t bytes_transferred) {
 
+
+	
 	{
 		std::unique_lock<std::recursive_mutex> lock(this->connection_mtx_);
 
 		if (error == boost::system::errc::success) {
 			/* If sending went without any errors, it means message has actually been sent.
 			Call any handlers */
-			this->OnSend(arr->data(), arr->size(), bytes_transferred);
+			this->OnSend(std::get<0>(buf), std::get<1>(buf), bytes_transferred);
 		}
+
+		// Delete the allocated memory.
+		delete std::get<0>(buf);
 	}
-
-	/*
-	std::cout << arr.get() << std::endl;
-
-	char* buf = arr->data();
-
-	std::cout << "Just sent: " << std::endl;
-
-	for (size_t i1 = 0; i1 < arr->size(); i1++) {
-		std::cout << buf[i1];
-	}
-
-	std::cout << std::endl;
-	*/
 
 }
