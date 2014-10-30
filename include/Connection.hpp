@@ -44,7 +44,7 @@ protected:
 	virtual void handle_read(std::shared_ptr<Connection> connection, const boost::system::error_code& error, size_t bytes_transferred) = 0;
 
 	virtual void start_write() = 0;
-	virtual void handle_write(std::shared_ptr<Connection> connection, size_t buffervec_index, const boost::system::error_code& error, size_t bytes_transferred) = 0;
+	//virtual void handle_write(std::shared_ptr<Connection> connection, size_t buffervec_index, const boost::system::error_code& error, size_t bytes_transferred) = 0;
 
 	void OnConnectionOpen();
 	void OnConnectionClose();

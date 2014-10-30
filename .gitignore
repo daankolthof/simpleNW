@@ -38,6 +38,9 @@
 *.vcxproj
 *.filters
 
+# Microsoft Visual Studio analysis files
+*.psess
+
 # StarUML design
 *.~ml
 *.uml
