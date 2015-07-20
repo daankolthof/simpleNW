@@ -12,15 +12,30 @@
 class Server;
 class NetworkService;
 
+/** Represents a connection to a peer.
+ * Can be used to read from and write to the peer.
+ *
+ */
 class Connection {
 
 public:
 
 	virtual ~Connection();
 
+	/* Return wether the connection is open and valid.
+	A valid and open connection will be able to send and receive data. */
 	virtual bool is_open() = 0;
 
-	virtual void send_nonblocking(const char data[], size_t bytes_to_send) = 0;
+	/* Will close or otherwise make connection invalid.
+	An invalid and or closed connection will not be able to send and receive data. */
+	virtual void close() = 0;
+
+	/* Make an internal copy of the buffer and send it, data can be cleared after calling this. */
+	virtual void send_nonblocking(char data[], size_t bytes_to_send) = 0;
+
+	/* Caller of this function is responsible for keeping the data buffer valid until
+	send has completed and last Handler has been called*/
+	virtual void send_nonblocking_buffer(char data[], size_t bytes_to_send) = 0;
 
 protected:
 
@@ -43,7 +58,6 @@ protected:
 	virtual void handle_read(std::shared_ptr<Connection> connection, const boost::system::error_code& error, size_t bytes_transferred) = 0;
 
 	virtual void start_write() = 0;
-	virtual void handle_write(std::shared_ptr<Connection> connection, std::tuple<char*, size_t> buf, const boost::system::error_code& error, size_t bytes_transferred) = 0;
 
 	void OnConnectionOpen();
 	void OnConnectionClose();

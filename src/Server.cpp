@@ -60,6 +60,11 @@ void Server::stop() {
 	this->join_threads();
 }
 
+/* Will call the stop handler of the implementing class. Then will call stop on
+ * the underlying IO service, which will send cancel all outstanding async IO
+ * operations and call the callback function with an error. Then reset the
+ * shared pointer to this class can be cleaned up.
+ */
 void Server::stop_server() {
 	this->OnStop();
 

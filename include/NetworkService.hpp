@@ -39,8 +39,8 @@ protected:
 
 	void OnConnectionOpen(std::shared_ptr<Connection> connection) const;
 	void OnConnectionClose(std::shared_ptr<Connection> connection) const;
-	void OnReceive(std::shared_ptr<Connection> connection, const char data[], size_t bytes_received) const;
-	void OnSend(std::shared_ptr<Connection> connection, const char data[], size_t data_size, size_t bytes_sent) const;
+	void OnReceive(std::shared_ptr<Connection> connection, char data[], size_t bytes_received) const;
+	void OnSend(std::shared_ptr<Connection> connection, char data[], size_t data_size, size_t bytes_sent) const;
 
 private:
 

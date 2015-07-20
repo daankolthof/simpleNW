@@ -37,6 +37,7 @@
 *.suo
 *.vcxproj
 *.filters
+*.vsp
 
 # Microsoft Visual Studio analysis files
 *.psess

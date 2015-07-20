@@ -3,6 +3,7 @@
 #define _TCPCONNECTION_H
 
 #include <Connection.hpp>
+#include <DynamicArray.hpp>
 
 #include <tuple>
 #include <vector>
@@ -21,14 +22,14 @@ public:
 
 	void close();
 
-	void send_nonblocking(const char data[], size_t bytes_to_send);
+	void send_nonblocking(char data[], size_t bytes_to_send);
+	void send_nonblocking_buffer(char data[], size_t bytes_to_send);
 
 	void start_read();
 	void handle_read(std::shared_ptr<Connection> connection, const boost::system::error_code& error, size_t bytes_transferred);
 
 	void start_write();
-	void handle_write(std::shared_ptr<Connection> connection, std::tuple<char*, size_t> buf, const boost::system::error_code& error, size_t bytes_transferred);
-
+	void handle_write(std::shared_ptr<Connection> connection, DynamicArray<char> arr, const boost::system::error_code& error, size_t bytes_transferred);
 
 
 protected:
@@ -41,5 +42,9 @@ protected:
 private:
 
 };
+
+
+
+
 
 #endif // _TCPCONNECTION_H

@@ -1,6 +1,8 @@
 
 #include <TCPConnection.hpp>
 
+#include <DynamicArray.hpp>
+
 TCPConnection::TCPConnection(boost::asio::io_service& io_service, std::shared_ptr<Server> server_ptr)
 : Connection(server_ptr), socket_(io_service)
 {
@@ -16,7 +18,7 @@ bool TCPConnection::is_open() {
 	return this->socket_.is_open();
 }
 
-void TCPConnection::send_nonblocking(const char data[], size_t bytes_to_send) {
+void TCPConnection::send_nonblocking(char data[], size_t bytes_to_send) {
 
 	{
 		std::unique_lock<std::recursive_mutex> lock(this->connection_mtx_);
@@ -25,29 +27,32 @@ void TCPConnection::send_nonblocking(const char data[], size_t bytes_to_send) {
 			return;
 		}
 
-		char* buf = new char[bytes_to_send];
-		memcpy(buf, data, bytes_to_send);
+		DynamicArray<char> arr(bytes_to_send);
+		memcpy(arr.data(), data, bytes_to_send);
 
-		std::tuple<char*, size_t> tup;
-		std::get<0>(tup) = buf;
-		std::get<1>(tup) = bytes_to_send;
-
-		/*
-		char* bufcopy = new char[bytes_to_send];
-		memcpy(bufcopy, data, bytes_to_send);
-
-		std::pair<char*, size_t> buffer_size_tuple;
-		std::get<0>(buffer_size_tuple) = bufcopy;
-		std::get<1>(buffer_size_tuple) = bytes_to_send;
-
-		this->sendbuffers_vec_.push_back(buffer_size_tuple);
-		size_t tuple_index = this->sendbuffers_vec_.size() - 1;
-
-		*/
-
-		this->socket_.async_write_some(boost::asio::buffer(buf, bytes_to_send), std::bind(&TCPConnection::handle_write, this, this->this_shared_ptr_, tup, std::placeholders::_1, std::placeholders::_2));
-
+		this->socket_.async_write_some(boost::asio::buffer(arr.data(), arr.size()), std::bind(&TCPConnection::handle_write, this, this->this_shared_ptr_, arr, std::placeholders::_1, std::placeholders::_2));
 	}
+}
+
+void TCPConnection::send_nonblocking_buffer(char data[], size_t bytes_to_send) {
+	
+	{
+		std::unique_lock<std::recursive_mutex> lock(this->connection_mtx_);
+
+		if (!this->is_open()) {
+			return;
+		}
+
+		DynamicArray<char> arr;
+
+		char** ptr = arr.dataref();
+		ptr = &data;
+		arr.sizeref() = bytes_to_send;
+		arr.should_delete_ref() = false;
+
+		this->socket_.async_write_some(boost::asio::buffer(arr.data(), arr.size()), std::bind(&TCPConnection::handle_write, this, this->this_shared_ptr_, arr, std::placeholders::_1, std::placeholders::_2));
+	}
+
 }
 
 void TCPConnection::close() {
@@ -66,7 +71,8 @@ void TCPConnection::close_socket() {
 }
 
 void TCPConnection::start_read() {
-
+	/* Start an aysnc read. The data received is stored in the data_ member variable.
+	Which is passed to any handlers in the handle_read function and subsequent calls. */
 	this->socket_.async_read_some(boost::asio::buffer(this->data_, this->max_buf_length), std::bind(&TCPConnection::handle_read, this, this->this_shared_ptr_, std::placeholders::_1, std::placeholders::_2));
 
 }
@@ -98,35 +104,7 @@ void TCPConnection::start_write() {
 
 }
 
-/*
-void TCPConnection::handle_write(std::shared_ptr<Connection> connection, size_t buffervec_index, const boost::system::error_code& error, size_t bytes_transferred) {
-
-	{
-		std::unique_lock<std::recursive_mutex> lock(this->connection_mtx_);
-
-		// Get the buffer used to store the data to send.
-		char* sendbuf_loc = std::get<0>(this->sendbuffers_vec_[buffervec_index]);
-		size_t sendbuf_size = std::get<1>(this->sendbuffers_vec_[buffervec_index]);
-
-		if (error == boost::system::errc::success) {
-			/* If sending went without any errors, it means message has actually been sent.
-			Call any handlers */ /*
-			this->OnSend(sendbuf_loc, sendbuf_size, bytes_transferred);
-		}
-
-		// Delete the data afer all handlers are called and data is no longer needed.
-		delete[] sendbuf_loc;
-
-		// Remove pointer to the deleted buffer from the vector.
-		this->sendbuffers_vec_.erase(this->sendbuffers_vec_.begin() + buffervec_index);
-
-	}
-
-}
-*/
-
-void TCPConnection::handle_write(std::shared_ptr<Connection> connection, std::tuple<char*, size_t> buf, const boost::system::error_code& error, size_t bytes_transferred) {
-
+void TCPConnection::handle_write(std::shared_ptr<Connection> connection, DynamicArray<char> arr, const boost::system::error_code& error, size_t bytes_transferred) {
 
 	
 	{
@@ -135,11 +113,9 @@ void TCPConnection::handle_write(std::shared_ptr<Connection> connection, std::tu
 		if (error == boost::system::errc::success) {
 			/* If sending went without any errors, it means message has actually been sent.
 			Call any handlers */
-			this->OnSend(std::get<0>(buf), std::get<1>(buf), bytes_transferred);
+			this->OnSend(arr.data(), arr.size(), bytes_transferred);
 		}
-
-		// Delete the allocated memory.
-		delete std::get<0>(buf);
 	}
 
+	// The DynamicArray used to hold the reference to the written data is deleted here.
 }
