@@ -1,5 +1,6 @@
 
 #include "simpleNW.hpp"
+#include <iostream>
 #include <memory>
 
 
