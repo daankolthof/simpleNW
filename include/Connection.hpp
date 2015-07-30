@@ -39,6 +39,7 @@ public:
 
 protected:
 
+	Connection() {}
 	Connection(std::shared_ptr<Server> server_ptr);
 
 	std::recursive_mutex connection_mtx_;
@@ -53,11 +54,6 @@ protected:
 
 	const std::shared_ptr<Server> server_ptr_;
 	char data_[max_buf_length];
-
-	virtual void start_read() = 0;
-	virtual void handle_read(std::shared_ptr<Connection> connection, const boost::system::error_code& error, size_t bytes_transferred) = 0;
-
-	virtual void start_write() = 0;
 
 	void OnConnectionOpen();
 	void OnConnectionClose();

@@ -38,6 +38,7 @@
 *.vcxproj
 *.filters
 *.vsp
+*.vcxproj.user
 
 # Microsoft Visual Studio analysis files
 *.psess

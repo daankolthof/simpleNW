@@ -27,6 +27,7 @@ TCPServer::TCPServer(int threads, uint16_t server_port, NetworkService* callback
 		break;
 	default:
 		// Will never happen because protocol enum is already filtered in NetworkService constructor.
+		assert(false);
 		break;
 
 	}

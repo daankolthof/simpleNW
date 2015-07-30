@@ -14,6 +14,7 @@ class Server;
 class NetworkService {
 
 	friend class Connection;
+	friend class UDPServer;
 
 public:
 
