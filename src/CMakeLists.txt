@@ -21,7 +21,6 @@ set(PROJECT_SOURCES
    TransportProtocol.cpp
    UDPConnection.cpp
    UDPServer.cpp
-   main.cpp
    )
 
 # compile library
