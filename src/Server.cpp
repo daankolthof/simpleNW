@@ -72,7 +72,6 @@ void Server::stop_server() {
 
 	this->this_shared_ptr_.reset();
 
-	
 }
 
 void Server::join_threads() {

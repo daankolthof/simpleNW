@@ -16,6 +16,9 @@
 
 #include <Connection.hpp>
 #include <TCPConnection.hpp>
+#include <UDPConnection.hpp>
+
+#include <DynamicArray.hpp>
 
 
 

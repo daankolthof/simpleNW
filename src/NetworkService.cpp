@@ -60,7 +60,7 @@ NetworkService::NetworkService(ServiceOptions options) {
 NetworkService::~NetworkService() {
 	/* Will stop all threads, the IO service and the server.
 	*/
-	this->stop();
+	if(this->started_server_) this->stop();
 
 }
 
@@ -90,6 +90,8 @@ void NetworkService::start() {
 }
 
 void NetworkService::stop() {
+
+	std::cout << "NWService::stop called" << std::endl;
 
 	this->underlying_server_->stop();
 	this->started_server_ = false;

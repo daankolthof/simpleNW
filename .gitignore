@@ -39,6 +39,12 @@
 *.filters
 *.vsp
 *.vcxproj.user
+*.log
+*.tlog
+*.pdb
+*.lastbuildstate
+*.ilk
+
 
 # Microsoft Visual Studio analysis files
 *.psess

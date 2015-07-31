@@ -24,8 +24,11 @@ endif("${isSystemDir}" STREQUAL "-1")
 
 # libary requirements
 set(Boost_USE_MULTITHREADED on)
-find_package(Boost 1.58.0 REQUIRED COMPONENTS system)
+set(BOOST_ROOT "C:/Program Files (x86)/boost/boost_1_51")
+set(Boost_DEBUG on)
+find_package(Boost 1.51.0) # REQUIRED COMPONENTS system)
 include_directories(${Boost_INCLUDE_DIRS})
+
 
 # include headers
 include_directories(include)

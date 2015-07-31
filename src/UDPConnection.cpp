@@ -20,11 +20,6 @@ void UDPConnection::send_nonblocking(char data[], size_t bytes_to_send) {
 
 void UDPConnection::send_nonblocking_buffer(char data[], size_t bytes_to_send) {
 	
-	DynamicArray<char> arr;
-	char** ptr = arr.dataref();
-	ptr = &data;
-	arr.sizeref() = bytes_to_send;
-	arr.should_delete_ref() = false;
-
+	DynamicArray<char> arr(data, bytes_to_send);
 	this->udp_server_->async_send(this->ep_, arr);
 }

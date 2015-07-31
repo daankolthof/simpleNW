@@ -3,6 +3,8 @@
 
 #include <DynamicArray.hpp>
 
+#include <iostream>
+
 TCPConnection::TCPConnection(boost::asio::io_service& io_service, std::shared_ptr<Server> server_ptr)
 : Connection(server_ptr), socket_(io_service)
 {
@@ -30,12 +32,14 @@ void TCPConnection::send_nonblocking(char data[], size_t bytes_to_send) {
 		DynamicArray<char> arr(bytes_to_send);
 		memcpy(arr.data(), data, bytes_to_send);
 
-		this->socket_.async_write_some(boost::asio::buffer(arr.data(), arr.size()), std::bind(&TCPConnection::handle_write, this, this->this_shared_ptr_, arr, std::placeholders::_1, std::placeholders::_2));
+		std::cout << "Should call move constructor now." << std::endl;
+		this->socket_.async_write_some(boost::asio::buffer(arr.data(), arr.size()), std::bind(&TCPConnection::handle_write, this, this->this_shared_ptr_, std::move(arr), std::placeholders::_1, std::placeholders::_2));
+		std::cout << "Move constructor called." << std::endl;
 	}
 }
 
 void TCPConnection::send_nonblocking_buffer(char data[], size_t bytes_to_send) {
-	
+	/*
 	{
 		std::unique_lock<std::recursive_mutex> lock(this->connection_mtx_);
 
@@ -52,6 +56,7 @@ void TCPConnection::send_nonblocking_buffer(char data[], size_t bytes_to_send) {
 
 		this->socket_.async_write_some(boost::asio::buffer(arr.data(), arr.size()), std::bind(&TCPConnection::handle_write, this, this->this_shared_ptr_, arr, std::placeholders::_1, std::placeholders::_2));
 	}
+	*/
 
 }
 
@@ -71,6 +76,7 @@ void TCPConnection::close_socket() {
 }
 
 void TCPConnection::start_read() {
+
 	/* Start an aysnc read. The data received is stored in the data_ member variable.
 	Which is passed to any handlers in the handle_read function and subsequent calls. */
 	this->socket_.async_read_some(boost::asio::buffer(this->data_, this->max_buf_length), std::bind(&TCPConnection::handle_read, this, this->this_shared_ptr_, std::placeholders::_1, std::placeholders::_2));
@@ -78,6 +84,8 @@ void TCPConnection::start_read() {
 }
 
 void TCPConnection::handle_read(std::shared_ptr<Connection> connection, const boost::system::error_code& error, size_t bytes_transferred) {
+
+	std::cout << "Reveived data" << std::endl;
 
 	{
 		std::unique_lock<std::recursive_mutex> lock(this->connection_mtx_);
