@@ -1,4 +1,5 @@
 #include <simpleNW.hpp>
+#include <boost/asio.hpp>
 
 #include <iostream>
 

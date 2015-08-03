@@ -11,6 +11,7 @@
 
 class Server;
 class NetworkService;
+class ConnectionInfo;
 
 /** Represents a connection to a peer.
  * Can be used to read from and write to the peer.
@@ -37,27 +38,22 @@ public:
 	send has completed and last Handler has been called*/
 	virtual void send_nonblocking_buffer(char data[], size_t bytes_to_send) = 0;
 
+	virtual ConnectionInfo getConnectionInfo() = 0;
+
 protected:
 
 	Connection() {}
 	Connection(std::shared_ptr<Server> server_ptr);
 
-	std::recursive_mutex connection_mtx_;
-
 	/* Used to keep the object alive, passed to the async functions.
 	Delete this and close underlying connection to kill object. */
 	std::shared_ptr<Connection> this_shared_ptr_;
 
-	const static int max_buf_length = 1024;
-
-	std::vector<std::pair<char*, size_t>> sendbuffers_vec_;
-
 	const std::shared_ptr<Server> server_ptr_;
-	char data_[max_buf_length];
 
 	void OnConnectionOpen();
 	void OnConnectionClose();
-	void OnReceive(size_t bytes_received);
+	void OnReceive(char data[], size_t bytes_received);
 	void OnSend(char data[], size_t data_size, size_t bytes_sent);
 
 private:

@@ -25,8 +25,6 @@ public:
 		this->buffer_size_ = arraysize;
 		this->cleaned_up = new bool;
 		*this->cleaned_up = false;
-
-		std::cout << "DynamicArray size constructor called with size: " << arraysize << std::endl;
 	}
 
 	/* Class is copyable but object copied from loses ownership of the underlying buffer.
@@ -36,8 +34,6 @@ public:
 		this->buffer_size_ = other.buffer_size_;
 		this->has_ownership_ = other.has_ownership_;
 		this->cleaned_up = other.cleaned_up;
-
-		std::cout << "DynamicArray copy constructor called." << std::endl;
 	}
 	DynamicArray(DynamicArray&& other) {
 		this->buffer_ = other.buffer_;
@@ -45,16 +41,11 @@ public:
 		this->has_ownership_ = other.has_ownership_;
 		other.has_ownership_ = false;
 		this->cleaned_up = other.cleaned_up;
-
-		std::cout << "DynamicArray move constructor called." << std::endl;
 	}
 
 	~DynamicArray() {
 		/* Check if we do not have a null pointer.
 		This could happen when objects were moved to other object. */
-		
-		std::cout << "DynamicArray destructor called. Cleaned up: " << *this->cleaned_up << std::endl;
-
 		if(this->has_ownership_ && this->buffer_ && !(*this->cleaned_up)) {
 			delete this->buffer_;
 			*this->cleaned_up = true;

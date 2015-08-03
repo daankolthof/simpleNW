@@ -26,7 +26,7 @@ public:
 	void send_nonblocking(char[], size_t);
 	void send_nonblocking_buffer(char[], size_t);
 
-
+	ConnectionInfo getConnectionInfo() override;
 
 protected:
 

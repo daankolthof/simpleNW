@@ -9,6 +9,7 @@
 #include <TransportProtocol.hpp>
 
 #include <Handler.hpp>
+#include <BufferingHandler.hpp>
 
 #include <Server.hpp>
 #include <TCPServer.hpp>
@@ -20,6 +21,9 @@
 
 #include <DynamicArray.hpp>
 
-
+#include <ConnectionInfo.hpp>
+#include <ConnectionRemoteEndpoint.hpp>
+#include <TCPConnectionRemoteEndpoint.hpp>
+#include <UDPConnectionRemoteEndpoint.hpp>
 
 #endif //_SIMPLENW_H

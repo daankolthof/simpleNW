@@ -2,6 +2,9 @@
 #include <TCPConnection.hpp>
 
 #include <DynamicArray.hpp>
+#include <ConnectionInfo.hpp>
+#include <ConnectionRemoteEndpoint.hpp>
+#include <TCPConnectionRemoteEndpoint.hpp>
 
 #include <iostream>
 
@@ -100,7 +103,7 @@ void TCPConnection::handle_read(std::shared_ptr<Connection> connection, const bo
 		}
 
 		// Call all handers before reading more data.
-		this->OnReceive(bytes_transferred);
+		this->OnReceive(this->data_, bytes_transferred);
 
 		this->start_read();
 
@@ -126,4 +129,14 @@ void TCPConnection::handle_write(std::shared_ptr<Connection> connection, Dynamic
 	}
 
 	// The DynamicArray used to hold the reference to the written data is deleted here.
+}
+
+ConnectionInfo TCPConnection::getConnectionInfo() {
+
+	ConnectionInfo result;
+	TCPConnectionRemoteEndpoint* tcpendp = new TCPConnectionRemoteEndpoint();
+	tcpendp->ep = this->socket_.remote_endpoint();
+	result.connectionendpoint = static_cast<ConnectionRemoteEndpoint*>(tcpendp);
+
+	return result;
 }

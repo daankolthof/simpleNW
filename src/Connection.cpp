@@ -26,8 +26,8 @@ void Connection::OnConnectionClose() {
 	this->server_ptr_->callback_service_->OnConnectionClose(this->this_shared_ptr_);
 }
 
-void Connection::OnReceive(size_t bytes_received) {
-	this->server_ptr_->callback_service_->OnReceive(this->this_shared_ptr_, this->data_, bytes_received);
+void Connection::OnReceive(char data[], size_t bytes_received) {
+	this->server_ptr_->callback_service_->OnReceive(this->this_shared_ptr_, data, bytes_received);
 }
 
 void Connection::OnSend(char data[], size_t data_size, size_t bytes_sent) {

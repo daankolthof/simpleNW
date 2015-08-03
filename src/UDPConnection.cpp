@@ -2,6 +2,8 @@
 
 #include <DynamicArray.hpp>
 #include <UDPServer.hpp>
+#include <ConnectionInfo.hpp>
+#include <UDPConnectionRemoteEndpoint.hpp>
 
 #include <iostream>
 
@@ -22,4 +24,14 @@ void UDPConnection::send_nonblocking_buffer(char data[], size_t bytes_to_send) {
 	
 	DynamicArray<char> arr(data, bytes_to_send);
 	this->udp_server_->async_send(this->ep_, arr);
+}
+
+ConnectionInfo UDPConnection::getConnectionInfo() {
+
+	ConnectionInfo result;
+	UDPConnectionRemoteEndpoint* udpendp = new UDPConnectionRemoteEndpoint();
+	udpendp->ep = this->ep_;
+	result.connectionendpoint = static_cast<ConnectionRemoteEndpoint*>(udpendp);
+
+	return result;
 }

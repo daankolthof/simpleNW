@@ -21,6 +21,7 @@ set(PROJECT_SOURCES
    TransportProtocol.cpp
    UDPConnection.cpp
    UDPServer.cpp
+   BufferingHandler.cpp
    )
 
 # compile library
@@ -29,6 +30,12 @@ add_library(${LIBRARY_OUTPUT_FILENAME} SHARED ${PROJECT_SOURCES})
 # link dependencies
 target_link_libraries(${LIBRARY_OUTPUT_FILENAME} ${Boost_LIBRARIES})
 
-#add_executable(simpleNW main.cpp)
-#target_link_libraries(simpleNW ${LIBRARY_OUTPUT_FILENAME})
-#target_link_libraries(simpleNW ${CMAKE_THREAD_LIBS_INIT})
+if(FALSE)
+add_executable(simpleNW chat_server.cpp)
+target_link_libraries(simpleNW ${LIBRARY_OUTPUT_FILENAME})
+target_link_libraries(simpleNW ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(simpleNW ${BOOST_LIBRARIES})
+
+find_package( Threads )
+target_link_libraries( simpleNW ${CMAKE_THREAD_LIBS_INIT} )
+endif()

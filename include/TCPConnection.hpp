@@ -8,6 +8,8 @@
 #include <tuple>
 #include <vector>
 
+class ConnectionInfo;
+
 class TCPConnection : public Connection {
 
 	friend class TCPServer;
@@ -31,6 +33,7 @@ public:
 	void start_write();
 	void handle_write(std::shared_ptr<Connection> connection, DynamicArray<char>, const boost::system::error_code& error, size_t bytes_transferred);
 
+	ConnectionInfo getConnectionInfo() override;
 
 protected:
 
@@ -41,10 +44,14 @@ protected:
 
 private:
 
+	const static int max_buf_length = 1024;
+	char data_[max_buf_length];
+
+	/* Used for locking the connection, make sure the connection cannot be closed
+	 * by another thread while handlers are active */
+	std::recursive_mutex connection_mtx_;
+
 };
-
-
-
 
 
 #endif // _TCPCONNECTION_H
