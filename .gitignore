@@ -71,3 +71,7 @@ install_manifest.txt
 Session.vim
 .netrwhist
 *~
+
+# Doxygen files and documentation
+/doc/*
+doxygen-config
