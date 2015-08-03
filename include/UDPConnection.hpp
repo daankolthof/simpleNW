@@ -1,5 +1,5 @@
 
-#if !defined(_UPDCONNECTION_H)
+#if !defined(_UDPCONNECTION_H)
 #define _UDPCONNECTION_H
 
 #include <Connection.hpp>

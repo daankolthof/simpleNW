@@ -1,5 +1,5 @@
 #if !defined(_BUFFERINGHANDLER_H)
-#define _BUFFEREINGHANDLER_H
+#define _BUFFERINGHANDLER_H
 
 #include <Handler.hpp>
 
