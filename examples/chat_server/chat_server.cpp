@@ -7,62 +7,58 @@
 
 #include <map>
 #include <vector>
+#include <unordered_set>
 
-enum class messageType : unsigned char {
-	HELLO_MSG,
-	CHAT_MSG,
-	LEAVE_MSG,
-	ERROR_MSG
-};
+std::unordered_set<std::shared_ptr<Connection>> connections;
 
-std::map<ConnectionInfo, std::vector<char>> client_messages;
-bool last_info_set = false;
-ConnectionInfo last_info;
+class ConnectHandler : public Handler {
+	void OnConnectionOpen(std::shared_ptr<Connection> connection) override {
+		std::cout << "Someone joined chat" << std::endl;
+		connections.insert(connection);
 
-class MessageHandler : public Handler {
-	void OnReceive(std::shared_ptr<Connection> connection, char data[], size_t bytes_received) override {
-
-		if (last_info_set) {
-			std::cout << "ConnectionInfo equals: " << (last_info == connection->getConnectionInfo()) << std::endl;
+		for (std::shared_ptr<Connection> con : connections) {
+			if (con == connection) continue;
+			con->send_nonblocking("Someone joined chat\n", 21);
 		}
+	}
 
-		last_info = connection->getConnectionInfo();
-		last_info_set = true;
+	void OnConnectionClose(std::shared_ptr<Connection> connection) override {
+		std::cout << "Someone left chat" << std::endl;
+		connections.erase(connection);
 
-
-		for (int i1 = 0; i1 < bytes_received; i1++) {
-			if(data[i1] == '\n') {
-				// End of command receive, handle command.
-				std::vector<char> command = client_messages[connection->getConnectionInfo()];
-				for (int i1 = 0; i1 < command.size(); i1++) {
-					std::cout << command[i1];
-				}
-
-				// Clear the message vector.
-				client_messages[connection->getConnectionInfo()].clear();
-
-			}
-			else {
-				// Push back character to the current command.
-				client_messages[connection->getConnectionInfo()].push_back(data[i1]);
-			}
+		for (std::shared_ptr<Connection> con : connections) {
+			if (con == connection) continue;
+			con->send_nonblocking("Someone left chat\n", 19);
 		}
-
 	}
 };
 
 int main(int argc, char* argv[]) {
 	
 	ServiceOptions options;
-	options.server_port_ = 3000;
+	options.server_port_ = 5000;
 	options.threads_ = 4;
 	options.transport_protocol_ = IPV6::TCP();
 
 	NetworkService nwservice(options);
 
-	MessageHandler hand;
+	BufferingHandler bufhand(
+		[](std::shared_ptr<Connection> connection, std::vector<char> buffer) {
+			for (int i1 = 0; i1 < buffer.size(); i1++) {
+				std::cout << buffer[i1];
+			}
 
-	nwservice.addHandler(&hand);
+			for (std::shared_ptr<Connection> con : connections) {
+				if (con == connection) continue;
+				con->send_nonblocking(buffer.data(), buffer.size());
+			}
+		}
+	);
+
+	ConnectHandler conhand;
+
+	nwservice.addHandler(&bufhand);
+	nwservice.addHandler(&conhand);
 	
 	nwservice.start();
 
