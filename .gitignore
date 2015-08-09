@@ -44,7 +44,7 @@
 *.pdb
 *.lastbuildstate
 *.ilk
-
+*codeanalysis.xml
 
 # Microsoft Visual Studio analysis files
 *.psess

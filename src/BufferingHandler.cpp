@@ -6,9 +6,7 @@
 #include <iostream>
 
 
-BufferingHandler::BufferingHandler(std::function<void(std::shared_ptr<Connection>, std::vector<char>)> callback) {
-	this->tocall_ = callback;
-}
+BufferingHandler::BufferingHandler(std::function<void(std::shared_ptr<Connection>, std::vector<char>)> callback) : tocall_(callback) {}
 
 char BufferingHandler::getDelimiter() {
 	return this->delimiter_.load();
@@ -19,9 +17,7 @@ void BufferingHandler::setDelimiter(char delimiter) {
 }
 
 void BufferingHandler::OnReceive(std::shared_ptr<Connection> connection, char data[], size_t bytes_received) {
-	
-	std::pair<std::unique_ptr<std::vector<char>>, std::unique_ptr<std::mutex>> vec_mtx_pair;
-	
+		
 	std::vector<char>* vec;
 	std::mutex* vec_mtx;
 
@@ -54,7 +50,7 @@ void BufferingHandler::OnReceive(std::shared_ptr<Connection> connection, char da
 	{
 		std::lock_guard<std::mutex> vec_lock(*vec_mtx);
 
-		for (int i1 = 0; i1 < bytes_received; i1++) {
+		for (unsigned int i1 = 0; i1 < bytes_received; i1++) {
 
 			// Push character in buffer.
 			vec->push_back(data[i1]);

@@ -11,7 +11,7 @@
 
 UDPServer::UDPServer(int threads, uint16_t server_port, NetworkService* callback_service, TransportProtocol tp)
 : Server(threads, server_port, callback_service, tp), udp_serversocket_(this->boost_io_service_,
-	boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), -1))
+	boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), 0))
 {
 	switch (tp.protocol_) {
 
