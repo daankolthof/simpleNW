@@ -35,14 +35,12 @@ void TCPConnection::send_nonblocking(char data[], size_t bytes_to_send) {
 		DynamicArray<char> arr(bytes_to_send);
 		memcpy(arr.data(), data, bytes_to_send);
 
-		std::cout << "Should call move constructor now." << std::endl;
 		this->socket_.async_write_some(boost::asio::buffer(arr.data(), arr.size()), std::bind(&TCPConnection::handle_write, this, this->this_shared_ptr_, std::move(arr), std::placeholders::_1, std::placeholders::_2));
-		std::cout << "Move constructor called." << std::endl;
 	}
 }
 
 void TCPConnection::send_nonblocking_buffer(char data[], size_t bytes_to_send) {
-	/*
+	
 	{
 		std::unique_lock<std::recursive_mutex> lock(this->connection_mtx_);
 
@@ -50,16 +48,11 @@ void TCPConnection::send_nonblocking_buffer(char data[], size_t bytes_to_send) {
 			return;
 		}
 
-		DynamicArray<char> arr;
-
-		char** ptr = arr.dataref();
-		ptr = &data;
-		arr.sizeref() = bytes_to_send;
-		arr.should_delete_ref() = false;
+		DynamicArray<char> arr(data, bytes_to_send);
 
 		this->socket_.async_write_some(boost::asio::buffer(arr.data(), arr.size()), std::bind(&TCPConnection::handle_write, this, this->this_shared_ptr_, arr, std::placeholders::_1, std::placeholders::_2));
 	}
-	*/
+	
 
 }
 
@@ -87,8 +80,6 @@ void TCPConnection::start_read() {
 }
 
 void TCPConnection::handle_read(std::shared_ptr<Connection> connection, const boost::system::error_code& error, size_t bytes_transferred) {
-
-	std::cout << "Reveived data" << std::endl;
 
 	{
 		std::unique_lock<std::recursive_mutex> lock(this->connection_mtx_);

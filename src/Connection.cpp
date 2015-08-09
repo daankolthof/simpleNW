@@ -4,15 +4,9 @@
 #include <Server.hpp>
 #include <NetworkService.hpp>
 
-#include <iostream>
-
 
 Connection::Connection(std::shared_ptr<Server> server_ptr)
-: server_ptr_(server_ptr)
-{
-	std::cout << "Connection created" << std::endl;
-	std::cout << this->server_ptr_.use_count() << std::endl;
-}
+: server_ptr_(server_ptr) {}
 
 Connection::~Connection() {
 

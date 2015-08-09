@@ -64,7 +64,12 @@ void TCPServer::handle_accept(std::shared_ptr<TCPConnection> connection, const b
 			this->stop_server();
 		}
 
-		if (error) {
+		if (error == boost::asio::error::operation_aborted) {
+			/* Operation is aborted due to server stopping or other reasons,
+			 * just return doing nothing. */
+			return;
+		} else if (error) {
+			/* Another error, mark the connection as closed. */
 			connection->close();
 		}
 		else

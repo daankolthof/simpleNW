@@ -13,8 +13,6 @@
 
 NetworkService::NetworkService(ServiceOptions options) {
 
-	std::cout << "Starting service" << std::endl;
-
 	/* If port specified in options is not within minimal and maximal port range, throw exception.
 	*/
 	if (!(ServiceOptions::PORT_MIN <= options.server_port_ && options.server_port_ <= ServiceOptions::PORT_MAX))
@@ -90,8 +88,6 @@ void NetworkService::start() {
 }
 
 void NetworkService::stop() {
-
-	std::cout << "NWService::stop called" << std::endl;
 
 	this->underlying_server_->stop();
 	this->started_server_ = false;
