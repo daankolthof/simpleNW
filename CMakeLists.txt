@@ -9,7 +9,7 @@ option(BUILD_NUMBER "Use a buildnumber" -1)
 option(RELEASE "Build a release version" off)
 
 # compiler flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -latomic")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
 
 # set rpath
 set(CMAKE_MACOSX_RPATH on)
