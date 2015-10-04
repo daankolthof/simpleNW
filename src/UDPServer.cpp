@@ -90,9 +90,11 @@ void UDPServer::OnStop() {
 }
 
 void UDPServer::OnReceive(boost::asio::ip::udp::endpoint ep, char data[], size_t bytes_transferred) {
-	callback_service_->OnReceive(std::shared_ptr<UDPConnection>(new UDPConnection(ep, this)), data, bytes_transferred);
+	std::unique_ptr<UDPConnection> udpcon(new UDPConnection(ep, this));
+	callback_service_->OnReceive(udpcon->constructConnectionInfo(), data, bytes_transferred);
 }
 
 void UDPServer::OnSend(boost::asio::ip::udp::endpoint ep, char data[], size_t bytes_transferred) {
-	callback_service_->OnReceive(std::shared_ptr<UDPConnection>(new UDPConnection(ep, this)), data, bytes_transferred);
+	std::unique_ptr<UDPConnection> udpcon(new UDPConnection(ep, this));
+	callback_service_->OnReceive(udpcon->constructConnectionInfo(), data, bytes_transferred);
 }

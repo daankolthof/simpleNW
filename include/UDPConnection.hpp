@@ -26,7 +26,10 @@ public:
 	void send_nonblocking(char[], size_t);
 	void send_nonblocking_buffer(char[], size_t);
 
-	ConnectionInfo getConnectionInfo() override;
+	ConnectionInfo constructConnectionInfo() override;
+
+	bool endpoint_less_than(Connection*) const override;
+	bool endpoint_equals(Connection*) const override;
 
 protected:
 

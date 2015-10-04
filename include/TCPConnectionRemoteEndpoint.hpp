@@ -5,7 +5,9 @@
 
 class TCPConnectionRemoteEndpoint : public ConnectionRemoteEndpoint {
 
-public:
+	friend class TCPConnection;
+
+private:
 
 	bool operator<(ConnectionRemoteEndpoint* connection_remote_endpoint) override {
 
@@ -27,6 +29,10 @@ public:
 
 		TCPConnectionRemoteEndpoint* tcpend = static_cast<TCPConnectionRemoteEndpoint*>(connection_remote_endpoint);
 		return this->ep == tcpend->ep;
+	}
+
+	TCPConnectionRemoteEndpoint(boost::asio::ip::tcp::endpoint ep) {
+		this->ep = ep;
 	}
 
 	boost::asio::ip::tcp::endpoint ep;

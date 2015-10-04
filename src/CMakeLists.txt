@@ -22,6 +22,7 @@ set(PROJECT_SOURCES
    UDPConnection.cpp
    UDPServer.cpp
    BufferingHandler.cpp
+   ConnectionInfo.cpp
    )
 
 # compile library

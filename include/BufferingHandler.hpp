@@ -15,23 +15,23 @@ class BufferingHandler : public Handler {
 
 public:
 
-	BufferingHandler(std::function<void(std::shared_ptr<Connection>, std::vector<char>)>);
+	BufferingHandler(std::function<void(ConnectionInfo, std::vector<char>)>);
 
 	char getDelimiter();
-	void setDelimiter(char);
+	//void setDelimiter(char);
 
 protected:
 
 private:
 
-	void OnReceive(std::shared_ptr<Connection>, char[], size_t) override;
+	void OnReceive(ConnectionInfo, char[], size_t) override;
 
-	std::atomic<char> delimiter_ = '\n';
+	const char delimiter_ = '\n';
 
 	std::mutex buffers_mtx;
 	std::map<ConnectionInfo, std::pair<std::unique_ptr<std::vector<char>>, std::unique_ptr<std::mutex>>> buffers_;
 	
-	std::function<void(std::shared_ptr<Connection>, std::vector<char>)> tocall_;
+	std::function<void(ConnectionInfo, std::vector<char>)> tocall_;
 
 };
 

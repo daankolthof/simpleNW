@@ -33,14 +33,17 @@ public:
 	void start_write();
 	void handle_write(std::shared_ptr<Connection> connection, DynamicArray<char>, const boost::system::error_code& error, size_t bytes_transferred);
 
-	ConnectionInfo getConnectionInfo() override;
-
 protected:
 
 	TCPConnection(boost::asio::io_service& io_service, std::shared_ptr<Server> server_ptr);
-	
+	TCPConnection(TCPConnection&);
+
 	void close_socket();
+
+	ConnectionInfo constructConnectionInfo() override;
 	
+	bool endpoint_less_than(Connection*) const override;
+	bool endpoint_equals(Connection*) const override;
 
 private:
 

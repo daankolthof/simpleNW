@@ -5,6 +5,9 @@
 #include <TransportProtocol.hpp>
 #include <Handler.hpp>
 
+#include <ConnectionInfo.hpp>
+#include <Connection.hpp>
+
 #include <TCPServer.hpp>
 #include <UDPServer.hpp>
 
@@ -109,18 +112,18 @@ void NetworkService::OnConnectionClose(std::shared_ptr<Connection> connection) c
 
 }
 
-void NetworkService::OnReceive(std::shared_ptr<Connection> connection, char data[], size_t bytes_received) const {
+void NetworkService::OnReceive(ConnectionInfo connectioninfo, char data[], size_t bytes_received) const {
 
 	for (Handler* h : handlers_) {
-		h->OnReceive(connection, data, bytes_received);
+		h->OnReceive(connectioninfo, data, bytes_received);
 	}
 
 }
 
-void NetworkService::OnSend(std::shared_ptr<Connection> connection, char data[], size_t data_size, size_t bytes_sent) const {
+void NetworkService::OnSend(ConnectionInfo connectioninfo, char data[], size_t data_size, size_t bytes_sent) const {
 
 	for (Handler* h : handlers_) {
-		h->OnSend(connection, data, data_size, bytes_sent);
+		h->OnSend(connectioninfo, data, data_size, bytes_sent);
 	}
 
 }

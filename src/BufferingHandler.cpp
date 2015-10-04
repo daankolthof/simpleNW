@@ -6,17 +6,19 @@
 #include <iostream>
 
 
-BufferingHandler::BufferingHandler(std::function<void(std::shared_ptr<Connection>, std::vector<char>)> callback) : tocall_(callback) {}
+BufferingHandler::BufferingHandler(std::function<void(ConnectionInfo, std::vector<char>)> callback) : tocall_(callback) {}
 
 char BufferingHandler::getDelimiter() {
-	return this->delimiter_.load();
+	return this->delimiter_;
 }
 
+/*
 void BufferingHandler::setDelimiter(char delimiter) {
 	this->delimiter_.store(delimiter);
 }
+*/
 
-void BufferingHandler::OnReceive(std::shared_ptr<Connection> connection, char data[], size_t bytes_received) {
+void BufferingHandler::OnReceive(ConnectionInfo connectioninfo, char data[], size_t bytes_received) {
 		
 	std::vector<char>* vec;
 	std::mutex* vec_mtx;
@@ -25,7 +27,7 @@ void BufferingHandler::OnReceive(std::shared_ptr<Connection> connection, char da
 	{
 		std::lock_guard<std::mutex> buffers_lock(buffers_mtx);
 
-		std::map<ConnectionInfo, std::pair<std::unique_ptr<std::vector<char>>, std::unique_ptr<std::mutex>>>::iterator it = buffers_.find(connection->getConnectionInfo());
+		std::map<ConnectionInfo, std::pair<std::unique_ptr<std::vector<char>>, std::unique_ptr<std::mutex>>>::iterator it = buffers_.find(connectioninfo);
 
 		// Connection has not been seen before.
 		if (it == buffers_.end()) {
@@ -34,10 +36,10 @@ void BufferingHandler::OnReceive(std::shared_ptr<Connection> connection, char da
 			std::unique_ptr<std::vector<char>> vec_ptr(new std::vector<char>);
 			std::pair<std::unique_ptr<std::vector<char>>, std::unique_ptr<std::mutex>> vec_mtx_pair(std::move(vec_ptr), std::move(mtx_ptr));
 			
-			buffers_[connection->getConnectionInfo()] = std::move(vec_mtx_pair);
+			buffers_[connectioninfo] = std::move(vec_mtx_pair);
 
 			// Put it in the iterator.
-			it = buffers_.find(connection->getConnectionInfo());
+			it = buffers_.find(connectioninfo);
 		}
 
 		vec = it->second.first.get();
@@ -57,7 +59,7 @@ void BufferingHandler::OnReceive(std::shared_ptr<Connection> connection, char da
 
 			// If it's the delimiter, call the handler function.
 			if (data[i1] == this->getDelimiter()) {
-				this->tocall_(connection, *vec);
+				this->tocall_(connectioninfo, *vec);
 
 				// Clear the message vector and start a new one.
 				vec->clear();

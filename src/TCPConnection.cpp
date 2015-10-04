@@ -122,12 +122,22 @@ void TCPConnection::handle_write(std::shared_ptr<Connection> connection, Dynamic
 	// The DynamicArray used to hold the reference to the written data is deleted here.
 }
 
-ConnectionInfo TCPConnection::getConnectionInfo() {
+ConnectionInfo TCPConnection::constructConnectionInfo() {
 
-	ConnectionInfo result;
-	TCPConnectionRemoteEndpoint* tcpendp = new TCPConnectionRemoteEndpoint();
-	tcpendp->ep = this->socket_.remote_endpoint();
-	result.connectionendpoint = static_cast<ConnectionRemoteEndpoint*>(tcpendp);
-
+	ConnectionInfo result(this_shared_ptr_);
 	return result;
+}
+
+bool TCPConnection::endpoint_less_than(Connection* connection) const {
+	assert(dynamic_cast<TCPConnection*>(connection) != nullptr); // Check that comparisons are not made between TCP and UDP connections.
+
+	TCPConnection* tcpcon = static_cast<TCPConnection*>(connection);
+	return this->socket_.remote_endpoint() < tcpcon->socket_.remote_endpoint();
+}
+
+bool TCPConnection::endpoint_equals(Connection* connection) const {
+	assert(dynamic_cast<TCPConnection*>(connection) != nullptr); // Check that comparisons are not made between TCP and UDP connectinons.
+
+	TCPConnection* tcpcon = static_cast<TCPConnection*>(connection);
+	return this->socket_.remote_endpoint() == tcpcon->socket_.remote_endpoint();
 }

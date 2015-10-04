@@ -2,14 +2,16 @@
 #if !defined(_NETWORKSERVICE_H)
 #define _NETWORKSERVICE_H
 
+#include <Connection.hpp>
+
 #include <memory>
 #include <mutex>
 #include <vector>
 
 class Handler;
-class Connection;
 class ServiceOptions;
 class Server;
+class ConnectionInfo;
 
 class NetworkService {
 
@@ -40,12 +42,10 @@ protected:
 
 	void OnConnectionOpen(std::shared_ptr<Connection> connection) const;
 	void OnConnectionClose(std::shared_ptr<Connection> connection) const;
-	void OnReceive(std::shared_ptr<Connection> connection, char data[], size_t bytes_received) const;
-	void OnSend(std::shared_ptr<Connection> connection, char data[], size_t data_size, size_t bytes_sent) const;
+	void OnReceive(ConnectionInfo connectioninfo, char data[], size_t bytes_received) const;
+	void OnSend(ConnectionInfo connectioninfo, char data[], size_t data_size, size_t bytes_sent) const;
 
 private:
-
-
 
 };
 

@@ -46,6 +46,8 @@
 *.ilk
 *codeanalysis.xml
 
+/Win32/*
+
 # Microsoft Visual Studio analysis files
 *.psess
 

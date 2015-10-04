@@ -19,6 +19,11 @@ class ConnectionInfo;
  */
 class Connection {
 
+	friend class ConnectionInfo;
+
+	friend bool operator<(const ConnectionInfo&, const ConnectionInfo&);
+	friend bool operator==(const ConnectionInfo&, const ConnectionInfo&);
+
 public:
 
 	virtual ~Connection();
@@ -38,8 +43,6 @@ public:
 	send has completed and last Handler has been called*/
 	virtual void send_nonblocking_buffer(char data[], size_t bytes_to_send) = 0;
 
-	virtual ConnectionInfo getConnectionInfo() = 0;
-
 protected:
 
 	Connection() {}
@@ -55,6 +58,10 @@ protected:
 	void OnConnectionClose();
 	void OnReceive(char data[], size_t bytes_received);
 	void OnSend(char data[], size_t data_size, size_t bytes_sent);
+
+	virtual ConnectionInfo constructConnectionInfo() = 0;
+	virtual bool endpoint_less_than(Connection*) const = 0;
+	virtual bool endpoint_equals(Connection*) const = 0;
 
 private:
 

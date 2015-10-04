@@ -26,12 +26,21 @@ void UDPConnection::send_nonblocking_buffer(char data[], size_t bytes_to_send) {
 	this->udp_server_->async_send(this->ep_, arr);
 }
 
-ConnectionInfo UDPConnection::getConnectionInfo() {
-
-	ConnectionInfo result;
-	UDPConnectionRemoteEndpoint* udpendp = new UDPConnectionRemoteEndpoint();
-	udpendp->ep = this->ep_;
-	result.connectionendpoint = static_cast<ConnectionRemoteEndpoint*>(udpendp);
-
+ConnectionInfo UDPConnection::constructConnectionInfo() {
+	ConnectionInfo result(this->this_shared_ptr_);
 	return result;
+}
+
+bool UDPConnection::endpoint_less_than(Connection* connection) const {
+	assert(dynamic_cast<UDPConnection*>(connection) != nullptr); // Check that comparisons are not made between TCP and UDP connections.
+
+	UDPConnection* udpcon = static_cast<UDPConnection*>(connection);
+	return this->ep_ < udpcon->ep_;
+}
+
+bool UDPConnection::endpoint_equals(Connection* connection) const {
+	assert(dynamic_cast<UDPConnection*>(connection) != nullptr); // Check that comparisons are not made between TCP and UDP connectinons.
+
+	UDPConnection* udpcon = static_cast<UDPConnection*>(connection);
+	return this->ep_ == udpcon->ep_;
 }
