@@ -9,26 +9,26 @@
 #include <vector>
 #include <unordered_set>
 
-std::unordered_set<std::shared_ptr<Connection>> connections;
+std::unordered_set<ConnectionInfo> connections;
 
 class ConnectHandler : public Handler {
-	void OnConnectionOpen(std::shared_ptr<Connection> connection) override {
+	void OnConnectionOpen(ConnectionInfo connectioninfo) override {
 		std::cout << "Someone joined chat" << std::endl;
-		connections.insert(connection);
+		connections.insert(connectioninfo);
 
-		for (std::shared_ptr<Connection> con : connections) {
-			if (con == connection) continue;
-			con->send_nonblocking("Someone joined chat\n", 21);
+		for (ConnectionInfo con : connections) {
+			if (con == connectioninfo) continue;
+			con.getConnection()->send_nonblocking("Someone joined chat\n", 21);
 		}
 	}
 
-	void OnConnectionClose(std::shared_ptr<Connection> connection) override {
+	void OnConnectionClose(ConnectionInfo connectioninfo) override {
 		std::cout << "Someone left chat" << std::endl;
-		connections.erase(connection);
+		connections.erase(connectioninfo);
 
-		for (std::shared_ptr<Connection> con : connections) {
-			if (con == connection) continue;
-			con->send_nonblocking("Someone left chat\n", 19);
+		for (ConnectionInfo con : connections) {
+			if (con == connectioninfo) continue;
+			con.getConnection()->send_nonblocking("Someone left chat\n", 19);
 		}
 	}
 };
@@ -43,14 +43,14 @@ int main(int argc, char* argv[]) {
 	NetworkService nwservice(options);
 
 	BufferingHandler bufhand(
-		[](std::shared_ptr<Connection> connection, std::vector<char> buffer) {
+		[](ConnectionInfo connectioninfo, std::vector<char> buffer) {
 			for (int i1 = 0; i1 < buffer.size(); i1++) {
 				std::cout << buffer[i1];
 			}
 
-			for (std::shared_ptr<Connection> con : connections) {
-				if (con == connection) continue;
-				con->send_nonblocking(buffer.data(), buffer.size());
+			for (ConnectionInfo con : connections) {
+				if (con == connectioninfo) continue;
+				con.getConnection()->send_nonblocking(buffer.data(), buffer.size());
 			}
 		}
 	);

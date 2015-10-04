@@ -7,10 +7,10 @@
 class EchoingHander : public Handler {
 
 	/* Define what happens when data is received. */
-	void OnReceive(std::shared_ptr<Connection> connection, char data[], size_t bytes_received) override {
+	void OnReceive(ConnectionInfo connectioninfo, char data[], size_t bytes_received) override {
 
 		// Send back the received data.
-		connection->send_nonblocking(data, bytes_received);
+		connectioninfo.getConnection()->send_nonblocking(data, bytes_received);
 	}
 };
 

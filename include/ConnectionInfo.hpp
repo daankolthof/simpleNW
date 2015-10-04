@@ -26,6 +26,9 @@ public:
 
 	~ConnectionInfo() = default;
 
+	Connection* getConnection() {
+		return this->connection_.get();
+	}
 
 private:
 

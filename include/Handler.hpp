@@ -19,12 +19,12 @@ public:
 	/** Will be called whenever a connection opens.
 	 * Will be called whenever a connection is opened in the NetworkService the handler is registered to.
 	 */
-	virtual void OnConnectionOpen(std::shared_ptr<Connection>) {}
+	virtual void OnConnectionOpen(ConnectionInfo) {}
 
 	/** Will be called whenever a connection closes.
 	 * Will be called whenever a connection is closed in the NetworkService the handler is registered to.
 	 */
-	virtual void OnConnectionClose(std::shared_ptr<Connection>) {}
+	virtual void OnConnectionClose(ConnectionInfo) {}
 
 	/** Will be called whenever data has been received on the connection.
 	 * Will be called whenever data has been received on a connection in the NetworkService the handler is registered to.
