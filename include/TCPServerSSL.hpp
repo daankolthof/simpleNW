@@ -6,16 +6,13 @@
 
 #include <boost/asio/ssl.hpp>
 
+class SSLOptions;
+
 class TCPServerSSL : public TCPServer {
 
 public:
 
 	TCPServerSSL(int threads, uint16_t server_port, NetworkService* callback_service, TransportProtocol tp, SSLOptions ssl_options);
-
-
-protected:
-
-
 
 private:
 
