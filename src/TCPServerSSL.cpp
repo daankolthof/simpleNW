@@ -14,7 +14,6 @@ TCPServerSSL::TCPServerSSL(int threads, uint16_t server_port, NetworkService* ca
 	if (!ssl_options.certificate_chain_file_.empty) this->ssl_context_.use_certificate_chain_file(ssl_options.certificate_chain_file_);
 	if (!ssl_options.private_key_file_.empty) this->ssl_context_.use_private_key_file(ssl_options.private_key_file_, boost::asio::ssl::context::file_format::pem);
 
-
 }
 
 void TCPServerSSL::start_accept() {

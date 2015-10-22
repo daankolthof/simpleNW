@@ -35,9 +35,18 @@ NetworkService::NetworkService(ServiceOptions options) {
 
 	case TransportProtocol::ipv6_tcp:
 		{
-			std::shared_ptr<TCPServer> new_server(new TCPServer(options.threads_, server_port, this, options.transport_protocol_));
-			new_server->this_shared_ptr_ = new_server;
-			this->underlying_server_ = new_server;
+			
+			// Check whether SSL should be used.
+			if (options.ssl_options.options_set) {
+				std::shared_ptr<Server> new_server(TCPServerSSL(options.threads_, server_port, this, options.transport_protocol_, options.ssl_options));
+				new_server->this_shared_ptr_ = new_server;
+				this->underlying_server_ = new_server;
+			}
+			else {
+				std::shared_ptr<TCPServer> new_server(new TCPServer(options.threads_, server_port, this, options.transport_protocol_));
+				new_server->this_shared_ptr_ = new_server;
+				this->underlying_server_ = new_server;
+			}
 		}
 		
 		break;
@@ -45,6 +54,11 @@ NetworkService::NetworkService(ServiceOptions options) {
 
 	case TransportProtocol::ipv6_udp:
 		{
+			// SSL over UDP is not supported.
+			if (options.ssl_options.options_set()) {
+				throw new std::invalid_argument("Argument mismatch, SSL options are given, but TransportProtocol specifies UDP. SSL over UDP is not supported.");
+			}
+
 			std::shared_ptr<UDPServer> new_server(new UDPServer(options.threads_, server_port, this, options.transport_protocol_));
 			new_server->this_shared_ptr_ = new_server;
 			this->underlying_server_ = new_server;
@@ -96,18 +110,18 @@ void NetworkService::stop() {
 	this->started_server_ = false;
 }
 
-void NetworkService::OnConnectionOpen(std::shared_ptr<Connection> connection) const {
+void NetworkService::OnConnectionOpen(ConnectionInfo connectioninfo) const {
 
 	for (Handler* h : handlers_) {
-		h->OnConnectionOpen(connection);
+		h->OnConnectionOpen(connectioninfo);
 	}
 
 }
 
-void NetworkService::OnConnectionClose(std::shared_ptr<Connection> connection) const {
+void NetworkService::OnConnectionClose(ConnectionInfo connectioninfo) const {
 
 	for (Handler* h : handlers_) {
-		h->OnConnectionClose(connection);
+		h->OnConnectionClose(connectioninfo);
 	}
 
 }
