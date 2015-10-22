@@ -22,10 +22,10 @@ build:
   steps:
     - script:
       name: cmake build
-        code: |
+        code:|
           cmake .
 
     - script:
       name: make build
-        code: |
+        code:|
           make
