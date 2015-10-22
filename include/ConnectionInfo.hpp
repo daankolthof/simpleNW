@@ -7,7 +7,7 @@
 
 class ConnectionInfo {
 
-	friend class TCPConnection;
+	friend class TCPConnectionBase;
 	friend class UDPConnection;
 
 	friend bool operator<(const ConnectionInfo&, const ConnectionInfo&);

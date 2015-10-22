@@ -1,14 +1,19 @@
 
-#if !defined(_TCPCONNECTION_H)
-#define _TCPCONNECTION_H
+#if !defined(_TCPCONNECTIONSSL_H)
+#define _TCPCONNECTIONSSL_H
 
 #include <TCPConnectionBase.hpp>
 
-class TCPConnection : public TCPConnectionBase {
+#include <boost/asio/ssl.hpp>
+
+class TCPConnectionSSL : public TCPConnectionBase {
+
+	friend class TCPServerSSL;
 
 public:
 
-	boost::asio::ip::tcp::socket socket_;
+	void start_handshake();
+	void handle_handshake(const boost::system::error_code& error);
 
 	bool is_open() override;
 
@@ -23,13 +28,13 @@ public:
 
 protected:
 
-	TCPConnection(boost::asio::io_service& io_service, std::shared_ptr<Server> server_ptr);
-	
+	TCPConnectionSSL(boost::asio::io_service& io_service, boost::asio::ssl::context& ssl_context, std::shared_ptr<Server> server_ptr);
+
 	bool endpoint_less_than(Connection*) const;
 	bool endpoint_equals(Connection*) const;
 
-private:
+	boost::asio::ssl::stream<boost::asio::ip::tcp::socket> ssl_socket_;
 
 };
 
-#endif // _TCPCONNECTION_H
+#endif // _TCPCONNECTIONSSL_H

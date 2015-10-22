@@ -18,7 +18,6 @@ private:
 
 	boost::asio::ssl::context ssl_context_;
 
-
 };
 
 
