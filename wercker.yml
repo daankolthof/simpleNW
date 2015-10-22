@@ -22,10 +22,8 @@ build:
   steps:
     - script:
       name: cmake build
-        code:|
-          cmake .
+      code: cmake .
 
     - script:
       name: make build
-        code:|
-          make
+      code: make
