@@ -8,6 +8,8 @@
 
 class SSLOptions {
 
+	friend class TCPServerSSL;
+
 public:
 
 	/* Set the file containing the certificate chain in PEM format.
