@@ -34,7 +34,7 @@ protected:
 	TCPConnectionBase(boost::asio::io_service& io_service, std::shared_ptr<Server> server_ptr);
 	TCPConnectionBase(TCPConnectionBase&);
 
-	virtual void close_socket() = 0;
+	void close_socket();
 
 	ConnectionInfo constructConnectionInfo() override;
 

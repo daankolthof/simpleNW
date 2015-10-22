@@ -6,6 +6,8 @@
 
 class TCPConnection : public TCPConnectionBase {
 
+	friend class TCPServer;
+
 public:
 
 	boost::asio::ip::tcp::socket socket_;

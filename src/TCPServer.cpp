@@ -93,9 +93,3 @@ void TCPServer::OnStop() {
 
 	this->tcp_acceptor_.close();
 }
-
-/* Keeping a list of connections is not needed, connections are kept alive until closed.
-*/
-void TCPServer::register_new_connection(std::shared_ptr<TCPConnection> connection) {
-	
-}

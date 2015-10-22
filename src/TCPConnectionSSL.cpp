@@ -26,6 +26,7 @@ void TCPConnectionSSL::handle_handshake(const boost::system::error_code& error) 
 		/* Handshake has completed without any (security) errors.
 		 * Start reading data.
 		 */
+		this->OnConnectionOpen();
 		this->start_read();
 	}
 }
