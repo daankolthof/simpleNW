@@ -14,6 +14,11 @@ public:
 
 	TCPServerSSL(int threads, uint16_t server_port, NetworkService* callback_service, TransportProtocol tp, SSLOptions ssl_options);
 
+protected:
+
+	void start_accept();
+	void handle_accept(std::shared_ptr<TCPConnectionSSL> connection, const boost::system::error_code& error);
+
 private:
 
 	boost::asio::ssl::context ssl_context_;

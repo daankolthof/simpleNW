@@ -31,14 +31,11 @@ protected:
 
 	std::vector<std::shared_ptr<TCPConnection>> connections;
 
-	void start_accept();
-	void handle_accept(std::shared_ptr<TCPConnection> connection, const boost::system::error_code& error);
+	virtual void start_accept();
+	virtual void handle_accept(std::shared_ptr<TCPConnection> connection, const boost::system::error_code& error);
 
 	void OnStart();
-	void OnStop();
-
-	void register_new_connection(std::shared_ptr<TCPConnection> connection);
-	
+	void OnStop();	
 
 private:
 
