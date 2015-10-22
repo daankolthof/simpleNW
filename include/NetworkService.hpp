@@ -40,8 +40,8 @@ protected:
 
 	bool started_server_ = false;
 
-	void OnConnectionOpen(std::shared_ptr<Connection> connection) const;
-	void OnConnectionClose(std::shared_ptr<Connection> connection) const;
+	void OnConnectionOpen(ConnectionInfo connectioninfo) const;
+	void OnConnectionClose(ConnectionInfo connectioninfo) const;
 	void OnReceive(ConnectionInfo connectioninfo, char data[], size_t bytes_received) const;
 	void OnSend(ConnectionInfo connectioninfo, char data[], size_t data_size, size_t bytes_sent) const;
 

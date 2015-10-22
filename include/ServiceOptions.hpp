@@ -3,6 +3,7 @@
 #define _SERVICEOPTIONS_H
 
 #include <TransportProtocol.hpp>
+#include <SSLOptions.hpp>
 
 class ServiceOptions {
 public:
@@ -13,6 +14,8 @@ public:
     int threads_ = 1;
     int32_t server_port_ = -1;
 	TransportProtocol transport_protocol_ = TransportProtocol::ip_default;
+	SSLOptions ssl_options;
+
 };
 
 #endif  //_SERVICEOPTIONS_H
