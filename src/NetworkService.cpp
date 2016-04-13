@@ -96,18 +96,18 @@ void NetworkService::stop() {
 	this->started_server_ = false;
 }
 
-void NetworkService::OnConnectionOpen(std::shared_ptr<Connection> connection) const {
+void NetworkService::OnConnectionOpen(ConnectionInfo connectioninfo) const {
 
 	for (Handler* h : handlers_) {
-		h->OnConnectionOpen(connection);
+		h->OnConnectionOpen(connectioninfo);
 	}
 
 }
 
-void NetworkService::OnConnectionClose(std::shared_ptr<Connection> connection) const {
+void NetworkService::OnConnectionClose(ConnectionInfo connectioninfo) const {
 
 	for (Handler* h : handlers_) {
-		h->OnConnectionClose(connection);
+		h->OnConnectionClose(connectioninfo);
 	}
 
 }

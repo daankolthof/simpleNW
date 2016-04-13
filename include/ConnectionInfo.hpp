@@ -30,6 +30,10 @@ public:
 		return this->connection_.get();
 	}
 
+	size_t hash() const {
+		return this->connection_->hash();
+	}
+
 private:
 
 	ConnectionInfo(std::shared_ptr<Connection> connection) {
@@ -46,6 +50,16 @@ inline bool operator<(const ConnectionInfo& ci1, const ConnectionInfo& ci2) {
 
 inline bool operator==(const ConnectionInfo& ci1, const ConnectionInfo& ci2) {
 	return ci1.connection_->endpoint_equals(ci2.connection_.get());
+}
+
+// Needed for Clang
+namespace std {
+template<>
+struct hash<ConnectionInfo> {
+    size_t operator()(const ConnectionInfo &ci) const {
+        return ci.hash();
+    }
+};
 }
 
 #endif

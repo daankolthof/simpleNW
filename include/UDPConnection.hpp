@@ -31,6 +31,12 @@ public:
 	bool endpoint_less_than(Connection*) const override;
 	bool endpoint_equals(Connection*) const override;
 
+	size_t hash() const override {
+		std::ostringstream stream;
+		stream << this->ep_;
+		return std::hash<std::string>()(stream.str());
+	}
+
 protected:
 
 	UDPConnection(boost::asio::ip::udp::endpoint, UDPServer*);

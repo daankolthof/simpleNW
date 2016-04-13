@@ -13,11 +13,11 @@ Connection::~Connection() {
 }
 
 void Connection::OnConnectionOpen() {
-	this->server_ptr_->callback_service_->OnConnectionOpen(this->this_shared_ptr_);
+	this->server_ptr_->callback_service_->OnConnectionOpen(this->constructConnectionInfo());
 }
 
 void Connection::OnConnectionClose() {
-	this->server_ptr_->callback_service_->OnConnectionClose(this->this_shared_ptr_);
+	this->server_ptr_->callback_service_->OnConnectionClose(this->constructConnectionInfo());
 }
 
 void Connection::OnReceive(char data[], size_t bytes_received) {

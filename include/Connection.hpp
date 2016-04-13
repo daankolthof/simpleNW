@@ -43,6 +43,8 @@ public:
 	send has completed and last Handler has been called*/
 	virtual void send_nonblocking_buffer(char data[], size_t bytes_to_send) = 0;
 
+	virtual size_t hash() const = 0;
+
 protected:
 
 	Connection() {}

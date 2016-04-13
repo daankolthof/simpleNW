@@ -33,6 +33,12 @@ public:
 	void start_write();
 	void handle_write(std::shared_ptr<Connection> connection, DynamicArray<char>, const boost::system::error_code& error, size_t bytes_transferred);
 
+	size_t hash() const override {
+		std::ostringstream stream;
+		stream << socket_.remote_endpoint();
+		return std::hash<std::string>()(stream.str());
+	}
+
 protected:
 
 	TCPConnection(boost::asio::io_service& io_service, std::shared_ptr<Server> server_ptr);
