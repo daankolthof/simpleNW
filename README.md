@@ -9,3 +9,5 @@ Properties and features:
 - Supports TCP and UDP;
 - Simple to use: check the examples!
 
+More information:
+https://daank94.github.io/simpleNW/
