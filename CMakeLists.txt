@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.9)
+cmake_minimum_required(VERSION 2.8.7)
 project(simpleNW)
 
 # project settings
@@ -24,11 +24,9 @@ endif("${isSystemDir}" STREQUAL "-1")
 
 # libary requirements
 set(Boost_USE_MULTITHREADED on)
-set(BOOST_ROOT "C:/Program Files (x86)/boost/boost_1_51")
 set(Boost_DEBUG on)
-find_package(Boost 1.51.0) # REQUIRED COMPONENTS system)
+find_package(Boost 1.51.0) REQUIRED COMPONENTS system)
 include_directories(${Boost_INCLUDE_DIRS})
-
 
 # include headers
 include_directories(include)
