@@ -25,7 +25,7 @@ endif("${isSystemDir}" STREQUAL "-1")
 # libary requirements
 set(Boost_USE_MULTITHREADED on)
 set(Boost_DEBUG on)
-find_package(Boost 1.51.0 REQUIRED COMPONENTS system)
+find_package(Boost 1.51.0)
 include_directories(${Boost_INCLUDE_DIRS})
 
 # include headers
