@@ -1,6 +1,8 @@
 simpleNW  
 ========
 
+[![Build Status](https://travis-ci.org/daank94/simpleNW.svg?branch=master)](https://travis-ci.org/daank94/simpleNW)
+
 High performance, simple to use networking engine for C++ applications.
 
 Properties and features:
